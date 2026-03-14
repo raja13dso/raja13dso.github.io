@@ -6,799 +6,977 @@
   <title>Raja Kumar Sharma — Security Architect</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Epilogue:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet" />
 
   <style>
-    /* ─── TOKENS ─────────────────────────────────────── */
+    /* ─── DESIGN TOKENS ──────────────────────────────── */
     :root {
-      --ink:      #0d0d0b;
-      --paper:    #f4f0e8;
-      --cream:    #ede9df;
-      --amber:    #c8873a;
-      --amber-lt: #e2a55a;
-      --muted:    #7a7060;
-      --rule:     rgba(200,135,58,.22);
-      --serif:    'Cormorant Garamond', Georgia, serif;
-      --mono:     'DM Mono', monospace;
-      --sans:     'Syne', sans-serif;
+      --bg:        #f7f4ef;
+      --bg-warm:   #efeae0;
+      --ink:       #111118;
+      --ink-mid:   #3a3a4a;
+      --ink-soft:  #6b6b7e;
+      --navy:      #1a1a3e;
+      --red:       #c0392b;
+      --red-lt:    #e74c3c;
+      --gold:      #b5860d;
+      --rule:      rgba(17,17,24,.12);
+      --rule-red:  rgba(192,57,43,.2);
+
+      --display:   'Bebas Neue', sans-serif;
+      --serif:     'Playfair Display', Georgia, serif;
+      --body:      'Epilogue', sans-serif;
     }
 
-    /* ─── RESET & BASE ──────────────────────────────── */
+    /* ─── RESET ──────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; font-size: 16px; }
 
     body {
-      background: var(--ink);
-      color: var(--paper);
-      font-family: var(--serif);
-      font-weight: 300;
-      line-height: 1.65;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--body);
+      font-weight: 400;
+      line-height: 1.6;
       overflow-x: hidden;
     }
 
-    /* Grain overlay */
-    body::before {
+    a { color: inherit; text-decoration: none; }
+
+    /* Subtle dot-grid background */
+    body::after {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      background-image: radial-gradient(circle, rgba(17,17,24,.07) 1px, transparent 1px);
+      background-size: 28px 28px;
       pointer-events: none;
-      z-index: 9999;
-      opacity: .7;
+      z-index: 0;
     }
 
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
+    .site-wrap { position: relative; z-index: 1; }
 
-    /* ─── UTILITY ────────────────────────────────────── */
-    .amber { color: var(--amber); }
-    .muted { color: var(--muted); }
-    .mono  { font-family: var(--mono); font-size: .78em; letter-spacing: .04em; }
-    .sans  { font-family: var(--sans); }
-
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: var(--rule);
-      margin: 0;
-    }
-
-    /* ─── NAV ────────────────────────────────────────── */
-    nav {
+    /* ─── TOP BAR ────────────────────────────────────── */
+    .topbar {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 100;
+      z-index: 200;
+      background: var(--bg);
+      border-bottom: 1px solid var(--rule);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.4rem 3rem;
-      background: linear-gradient(to bottom, rgba(13,13,11,.96) 60%, transparent);
-      mix-blend-mode: normal;
+      padding: .9rem 3rem;
     }
 
-    .nav-logo {
-      font-family: var(--sans);
-      font-weight: 800;
-      font-size: .88rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--amber);
+    .topbar-brand {
+      font-family: var(--display);
+      font-size: 1.25rem;
+      letter-spacing: .18em;
+      color: var(--navy);
     }
 
-    .nav-links {
+    .topbar-nav {
       display: flex;
-      gap: 2.4rem;
+      gap: 2.5rem;
       list-style: none;
     }
 
-    .nav-links a {
-      font-family: var(--mono);
+    .topbar-nav a {
+      font-family: var(--body);
       font-size: .72rem;
-      letter-spacing: .1em;
+      font-weight: 600;
+      letter-spacing: .14em;
       text-transform: uppercase;
-      color: var(--muted);
-      transition: color .25s;
+      color: var(--ink-soft);
+      transition: color .2s;
     }
 
-    .nav-links a:hover { color: var(--paper); }
+    .topbar-nav a:hover { color: var(--red); }
+
+    .topbar-badge {
+      font-family: var(--body);
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .4rem 1rem;
+      background: var(--navy);
+      color: #fff;
+      transition: background .2s;
+    }
+
+    .topbar-badge:hover { background: var(--red); }
 
     /* ─── HERO ───────────────────────────────────────── */
     #hero {
       min-height: 100svh;
+      padding-top: 4rem;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr auto;
+      border-bottom: 2px solid var(--ink);
       position: relative;
       overflow: hidden;
     }
 
-    .hero-left {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 0 4rem 5rem 3.5rem;
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero-eyebrow {
-      font-family: var(--mono);
-      font-size: .72rem;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      color: var(--amber);
-      margin-bottom: 1.8rem;
-      display: flex;
-      align-items: center;
-      gap: .8rem;
-    }
-
-    .hero-eyebrow::before {
-      content: '';
-      display: inline-block;
-      width: 2rem;
-      height: 1px;
-      background: var(--amber);
-    }
-
-    .hero-name {
-      font-family: var(--serif);
-      font-size: clamp(3.5rem, 7vw, 7rem);
-      font-weight: 300;
-      line-height: .95;
-      margin-bottom: 2.5rem;
-      letter-spacing: -.01em;
-    }
-
-    .hero-name em {
-      font-style: italic;
-      color: var(--amber);
-    }
-
-    .hero-intro {
-      font-size: 1.1rem;
-      font-weight: 300;
-      color: rgba(244,240,232,.6);
-      max-width: 38ch;
-      line-height: 1.75;
-      margin-bottom: 3rem;
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-    }
-
-    .btn {
-      font-family: var(--mono);
-      font-size: .72rem;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      padding: .85rem 2rem;
-      border: 1px solid var(--amber);
-      color: var(--amber);
-      transition: all .3s;
-      cursor: pointer;
-      background: transparent;
-    }
-
-    .btn:hover {
-      background: var(--amber);
-      color: var(--ink);
-    }
-
-    .btn-ghost {
-      border-color: rgba(244,240,232,.2);
-      color: rgba(244,240,232,.5);
-    }
-
-    .btn-ghost:hover {
-      background: rgba(244,240,232,.06);
-      color: var(--paper);
-      border-color: rgba(244,240,232,.4);
-    }
-
-    .hero-right {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-items: flex-end;
-      padding: 0 3.5rem 5rem 0;
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero-stats {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      text-align: right;
-    }
-
-    .stat-item {}
-    .stat-num {
-      font-family: var(--serif);
-      font-size: clamp(2.5rem, 4vw, 4rem);
-      font-weight: 300;
-      color: var(--amber);
-      line-height: 1;
-    }
-    .stat-label {
-      font-family: var(--mono);
-      font-size: .65rem;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: .3rem;
-    }
-
-    /* Large decorative number */
-    .hero-bg-num {
-      position: absolute;
-      right: -2rem;
-      top: 50%;
-      transform: translateY(-60%);
-      font-family: var(--serif);
-      font-size: clamp(18rem, 28vw, 30rem);
-      font-weight: 300;
-      color: rgba(200,135,58,.04);
-      line-height: 1;
-      pointer-events: none;
-      user-select: none;
-      z-index: 1;
-    }
-
-    .hero-line {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 1px;
-      background: var(--rule);
-    }
-
-    /* ─── ABOUT ──────────────────────────────────────── */
-    #about {
+    .hero-main {
       display: grid;
-      grid-template-columns: 22rem 1fr;
-      gap: 0;
-      padding: 6rem 3.5rem;
-      position: relative;
-    }
-
-    .about-label {
-      font-family: var(--mono);
-      font-size: .72rem;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--amber);
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      align-self: flex-start;
-      padding-top: .5rem;
-    }
-
-    .about-content {
-      padding-left: 4rem;
-      border-left: 1px solid var(--rule);
-    }
-
-    .section-title {
-      font-family: var(--serif);
-      font-size: clamp(2.5rem, 5vw, 4.5rem);
-      font-weight: 300;
-      line-height: 1.05;
-      margin-bottom: 2rem;
-      letter-spacing: -.01em;
-    }
-
-    .section-title em { font-style: italic; color: var(--amber); }
-
-    .about-text {
-      font-size: 1.1rem;
-      color: rgba(244,240,232,.7);
-      line-height: 1.8;
-      max-width: 60ch;
-      margin-bottom: 3rem;
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .6rem;
-      margin-top: 2rem;
-    }
-
-    .tag {
-      font-family: var(--mono);
-      font-size: .65rem;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      padding: .4rem 1rem;
-      border: 1px solid var(--rule);
-      color: var(--muted);
-      transition: all .25s;
-    }
-
-    .tag:hover {
-      border-color: var(--amber);
-      color: var(--amber-lt);
-    }
-
-    /* ─── IMPACT STRIP ───────────────────────────────── */
-    #impact {
-      background: rgba(200,135,58,.06);
-      border-top: 1px solid var(--rule);
-      border-bottom: 1px solid var(--rule);
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .impact-card {
-      padding: 3.5rem;
-      border-right: 1px solid var(--rule);
-      position: relative;
-      overflow: hidden;
-      transition: background .3s;
-    }
-
-    .impact-card:last-child { border-right: none; }
-
-    .impact-card:hover {
-      background: rgba(200,135,58,.04);
-    }
-
-    .impact-num {
-      font-family: var(--serif);
-      font-size: 4.5rem;
-      font-weight: 300;
-      color: var(--amber);
-      line-height: 1;
-      margin-bottom: .5rem;
-    }
-
-    .impact-desc {
-      font-family: var(--mono);
-      font-size: .72rem;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .impact-detail {
-      font-size: .95rem;
-      color: rgba(244,240,232,.5);
-      margin-top: .8rem;
-      font-style: italic;
-    }
-
-    /* ─── EXPERIENCE ─────────────────────────────────── */
-    #experience {
-      padding: 6rem 3.5rem;
-    }
-
-    .exp-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 4rem;
-    }
-
-    .exp-timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .exp-item {
-      display: grid;
-      grid-template-columns: 14rem 1fr;
-      gap: 0;
-      border-top: 1px solid var(--rule);
-      padding: 2.8rem 0;
-      position: relative;
-      transition: background .2s;
-    }
-
-    .exp-item:last-child { border-bottom: 1px solid var(--rule); }
-
-    .exp-meta {
-      padding-right: 3rem;
-    }
-
-    .exp-year {
-      font-family: var(--mono);
-      font-size: .7rem;
-      letter-spacing: .1em;
-      color: var(--amber);
-      margin-bottom: .4rem;
-    }
-
-    .exp-company {
-      font-family: var(--sans);
-      font-size: .85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--paper);
-      margin-bottom: .25rem;
-    }
-
-    .exp-location {
-      font-family: var(--mono);
-      font-size: .65rem;
-      color: var(--muted);
-      letter-spacing: .06em;
-    }
-
-    .exp-body {
-      border-left: 1px solid var(--rule);
-      padding-left: 3rem;
-    }
-
-    .exp-role {
-      font-family: var(--serif);
-      font-size: 1.6rem;
-      font-weight: 300;
-      font-style: italic;
-      color: var(--paper);
-      margin-bottom: 1rem;
-    }
-
-    .exp-bullets {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: .55rem;
-    }
-
-    .exp-bullets li {
-      font-size: .95rem;
-      color: rgba(244,240,232,.62);
-      line-height: 1.7;
-      padding-left: 1.2rem;
-      position: relative;
-    }
-
-    .exp-bullets li::before {
-      content: '—';
-      position: absolute;
-      left: 0;
-      color: var(--amber);
-      font-size: .8rem;
-    }
-
-    /* ─── EXPERTISE GRID ─────────────────────────────── */
-    #expertise {
-      padding: 6rem 3.5rem;
-      background: rgba(255,255,255,.013);
-      border-top: 1px solid var(--rule);
-    }
-
-    .expertise-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0;
-      margin-top: 4rem;
-      border: 1px solid var(--rule);
-    }
-
-    .expertise-card {
-      padding: 2.5rem;
-      border-right: 1px solid var(--rule);
-      border-bottom: 1px solid var(--rule);
-      transition: background .25s;
-    }
-
-    .expertise-card:nth-child(3n) { border-right: none; }
-    .expertise-card:nth-last-child(-n+3) { border-bottom: none; }
-
-    .expertise-card:hover { background: rgba(200,135,58,.04); }
-
-    .expertise-icon {
-      font-size: 1.8rem;
-      margin-bottom: 1.2rem;
-    }
-
-    .expertise-name {
-      font-family: var(--sans);
-      font-size: .85rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--paper);
-      margin-bottom: .8rem;
-    }
-
-    .expertise-desc {
-      font-size: .9rem;
-      color: rgba(244,240,232,.5);
-      line-height: 1.65;
-    }
-
-    /* ─── CERTIFICATIONS ─────────────────────────────── */
-    #certifications {
-      padding: 6rem 3.5rem;
-      border-top: 1px solid var(--rule);
-    }
-
-    .certs-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 3rem;
-    }
-
-    .cert-pill {
-      font-family: var(--mono);
-      font-size: .72rem;
-      letter-spacing: .09em;
-      text-transform: uppercase;
-      padding: .75rem 1.5rem;
-      border: 1px solid var(--rule);
-      color: rgba(244,240,232,.65);
-      position: relative;
-      overflow: hidden;
-      transition: all .3s;
-    }
-
-    .cert-pill::after {
-      content: '';
-      position: absolute;
-      left: 0; top: 0;
-      width: 3px;
-      height: 100%;
-      background: var(--amber);
-      transform: scaleY(0);
-      transition: transform .25s;
-    }
-
-    .cert-pill:hover {
-      border-color: rgba(200,135,58,.5);
-      color: var(--amber-lt);
-    }
-
-    .cert-pill:hover::after { transform: scaleY(1); }
-
-    /* ─── CONTACT / FOOTER ───────────────────────────── */
-    #contact {
-      padding: 7rem 3.5rem 5rem;
-      border-top: 1px solid var(--rule);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
+      grid-template-columns: 1fr 420px;
       align-items: end;
+      padding: 5rem 3rem 3rem;
+      gap: 3rem;
     }
 
-    .contact-headline {
+    .hero-display {
+      font-family: var(--display);
+      font-size: clamp(6rem, 14vw, 14rem);
+      line-height: .88;
+      letter-spacing: .02em;
+      color: var(--navy);
+    }
+
+    .hero-display .line-italic {
       font-family: var(--serif);
-      font-size: clamp(3rem, 6vw, 6rem);
-      font-weight: 300;
-      line-height: .95;
-      letter-spacing: -.02em;
-    }
-
-    .contact-headline em {
       font-style: italic;
-      color: var(--amber);
+      font-size: clamp(4rem, 9vw, 9rem);
+      font-weight: 400;
+      color: var(--red);
       display: block;
+      letter-spacing: -.01em;
+      line-height: 1;
     }
 
-    .contact-links {
+    .hero-right-col {
       display: flex;
       flex-direction: column;
-      gap: 1.4rem;
+      justify-content: flex-end;
+      gap: 2rem;
       padding-bottom: .5rem;
     }
 
-    .contact-row {
-      display: flex;
-      align-items: center;
-      gap: 1.2rem;
-      border-bottom: 1px solid var(--rule);
-      padding-bottom: 1.4rem;
+    .hero-tagline {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.2rem;
+      color: var(--ink-mid);
+      line-height: 1.65;
+      border-left: 3px solid var(--red);
+      padding-left: 1.2rem;
     }
 
-    .contact-type {
-      font-family: var(--mono);
-      font-size: .65rem;
-      letter-spacing: .14em;
+    .hero-meta {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+
+    .hero-meta-row {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      font-size: .78rem;
+      font-weight: 500;
+      letter-spacing: .06em;
       text-transform: uppercase;
-      color: var(--muted);
-      width: 6rem;
+      color: var(--ink-soft);
+    }
+
+    .hero-meta-row::before {
+      content: '';
+      display: block;
+      width: 1.5rem;
+      height: 1px;
+      background: var(--red);
       flex-shrink: 0;
     }
 
-    .contact-val {
-      font-size: 1rem;
-      color: rgba(244,240,232,.75);
-      transition: color .25s;
-    }
-
-    .contact-val:hover { color: var(--amber); }
-
-    .footer-bar {
-      border-top: 1px solid var(--rule);
-      padding: 1.8rem 3.5rem;
+    .hero-ctas {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
-    .footer-copy {
-      font-family: var(--mono);
-      font-size: .65rem;
-      letter-spacing: .1em;
+    .btn {
+      font-family: var(--body);
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .14em;
       text-transform: uppercase;
-      color: var(--muted);
+      padding: .85rem 2rem;
+      transition: all .25s;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .btn-primary { background: var(--navy); color: #fff; border: 2px solid var(--navy); }
+    .btn-primary:hover { background: var(--red); border-color: var(--red); }
+
+    .btn-outline { background: transparent; color: var(--ink); border: 2px solid rgba(17,17,24,.2); }
+    .btn-outline:hover { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+
+    /* Stats ticker */
+    .hero-ticker {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--rule);
+    }
+
+    .ticker-cell {
+      padding: 1.8rem 3rem;
+      border-right: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+
+    .ticker-cell:last-child { border-right: none; }
+
+    .ticker-num {
+      font-family: var(--display);
+      font-size: 3rem;
+      letter-spacing: .04em;
+      color: var(--navy);
+      line-height: 1;
+    }
+
+    .ticker-label {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
     }
 
     /* ─── MARQUEE ────────────────────────────────────── */
     .marquee-wrap {
       overflow: hidden;
-      border-top: 1px solid var(--rule);
-      border-bottom: 1px solid var(--rule);
-      padding: 1.2rem 0;
+      background: var(--navy);
+      padding: .85rem 0;
     }
 
     .marquee-track {
       display: flex;
       width: max-content;
-      animation: marquee 30s linear infinite;
+      animation: marquee 28s linear infinite;
     }
 
     .marquee-text {
-      font-family: var(--serif);
-      font-size: 1.4rem;
-      font-style: italic;
-      color: rgba(244,240,232,.18);
+      font-family: var(--display);
+      font-size: 1rem;
+      letter-spacing: .22em;
+      color: rgba(255,255,255,.45);
       white-space: nowrap;
       padding: 0 2rem;
     }
 
-    .marquee-text .sep {
-      color: var(--amber);
-      opacity: .5;
-      margin: 0 1.2rem;
-    }
+    .marquee-text .dot { color: var(--red-lt); margin: 0 1rem; }
 
     @keyframes marquee {
       from { transform: translateX(0); }
       to   { transform: translateX(-50%); }
     }
 
-    /* ─── SCROLL REVEAL ──────────────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+    /* ─── SECTION COMMONS ────────────────────────────── */
+    .section-label {
+      font-family: var(--body);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: .7rem;
     }
 
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
+    .section-label::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: var(--rule-red);
+      width: 3rem;
+    }
+
+    .section-title {
+      font-family: var(--display);
+      font-size: clamp(3rem, 6vw, 6rem);
+      letter-spacing: .04em;
+      color: var(--navy);
+      line-height: .9;
+    }
+
+    .section-title em {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: .7em;
+      letter-spacing: -.01em;
+      color: var(--red);
+      display: block;
+      line-height: 1.2;
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── ABOUT ──────────────────────────────────────── */
+    #about {
+      display: grid;
+      grid-template-columns: 5rem 1fr 1fr;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .about-sidebar {
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-family: var(--display);
+      font-size: .85rem;
+      letter-spacing: .3em;
+      color: rgba(255,255,255,.3);
+    }
+
+    .about-left {
+      padding: 5rem 4rem 5rem 3rem;
+      border-right: 1px solid var(--rule);
+    }
+
+    .about-right {
+      padding: 5rem 3rem 5rem 4rem;
+      background: var(--bg-warm);
+    }
+
+    .about-body {
+      font-size: 1.05rem;
+      color: var(--ink-mid);
+      line-height: 1.85;
+      margin-top: 2rem;
+    }
+
+    .about-body p + p { margin-top: 1.2rem; }
+
+    .skills-list {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .65rem;
+    }
+
+    .skill-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--ink);
+      padding: .4rem 0;
+      border-bottom: 1px solid rgba(17,17,24,.06);
+      transition: color .2s, padding-left .2s;
+    }
+
+    .skill-row:hover { color: var(--navy); padding-left: .4rem; }
+
+    .skill-row::before {
+      content: '▸';
+      color: var(--red);
+      font-size: .7rem;
+      flex-shrink: 0;
+    }
+
+    /* ─── IMPACT ─────────────────────────────────────── */
+    #impact {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .impact-card {
+      padding: 4rem 3rem;
+      border-right: 1px solid var(--rule);
+      position: relative;
+      overflow: hidden;
+      transition: background .3s, transform .35s cubic-bezier(.16,1,.3,1);
+      cursor: default;
+    }
+
+    .impact-card:last-child { border-right: none; }
+
+    .impact-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--red);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .4s cubic-bezier(.16,1,.3,1);
+    }
+
+    .impact-card:hover { background: rgba(192,57,43,.03); transform: translateY(-3px); }
+    .impact-card:hover::before { transform: scaleX(1); }
+
+    .impact-num {
+      font-family: var(--display);
+      font-size: 6rem;
+      letter-spacing: .02em;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: .5rem;
+      transition: color .3s;
+    }
+
+    .impact-card:hover .impact-num { color: var(--red); }
+
+    .impact-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: .8rem;
+    }
+
+    .impact-detail {
+      font-size: .92rem;
+      color: var(--ink-mid);
+      line-height: 1.7;
+      font-style: italic;
+      font-family: var(--serif);
+    }
+
+    /* ─── EXPERIENCE ─────────────────────────────────── */
+    #experience {
+      padding: 6rem 3rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 4rem;
+      gap: 2rem;
+    }
+
+    .exp-count {
+      font-family: var(--display);
+      font-size: 5rem;
+      color: rgba(17,17,24,.07);
+      letter-spacing: .04em;
+      line-height: 1;
+      align-self: flex-end;
+    }
+
+    .exp-list { display: flex; flex-direction: column; }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 18rem 1fr;
+      border-top: 1px solid var(--rule);
+      padding: 3rem 0;
+      position: relative;
+      transition: background .25s;
+    }
+
+    .exp-item:last-child { border-bottom: 1px solid var(--rule); }
+
+    .exp-item::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--red);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .4s cubic-bezier(.16,1,.3,1);
+    }
+
+    .exp-item:hover { background: rgba(26,26,62,.02); }
+    .exp-item:hover::before { transform: scaleX(1); }
+
+    .exp-meta {
+      padding-right: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+
+    .exp-years {
+      font-family: var(--display);
+      font-size: 1.1rem;
+      letter-spacing: .08em;
+      color: var(--red);
+    }
+
+    .exp-company {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.3;
+    }
+
+    .exp-location {
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .exp-body {
+      padding-left: 3rem;
+      border-left: 1px solid var(--rule);
+    }
+
+    .exp-role {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 1.2rem;
+      line-height: 1.25;
+      transition: color .25s;
+    }
+
+    .exp-item:hover .exp-role { color: var(--navy); }
+
+    .exp-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+
+    .exp-bullets li {
+      font-size: .92rem;
+      color: var(--ink-mid);
+      line-height: 1.7;
+      padding-left: 1.4rem;
+      position: relative;
+    }
+
+    .exp-bullets li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: .7em;
+      width: .6rem;
+      height: 1px;
+      background: var(--red);
+    }
+
+    /* ─── EXPERTISE ──────────────────────────────────── */
+    #expertise {
+      background: var(--navy);
+      padding: 6rem 3rem;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #expertise::before {
+      content: 'EXPERTISE';
+      position: absolute;
+      right: -1rem;
+      bottom: -2rem;
+      font-family: var(--display);
+      font-size: 16rem;
+      letter-spacing: .08em;
+      color: rgba(255,255,255,.025);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    #expertise .section-label { color: rgba(255,255,255,.45); }
+    #expertise .section-label::after { background: rgba(255,255,255,.1); }
+    #expertise .section-title { color: #fff; }
+    #expertise .section-title em { color: #e87060; }
+
+    .expertise-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      margin-top: 4rem;
+      background: rgba(255,255,255,.07);
+    }
+
+    .expertise-card {
+      background: var(--navy);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: background .3s;
+    }
+
+    .expertise-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--red-lt);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .4s cubic-bezier(.16,1,.3,1);
+    }
+
+    .expertise-card:hover { background: rgba(255,255,255,.05); }
+    .expertise-card:hover::after { transform: scaleX(1); }
+
+    .expertise-num {
+      font-family: var(--display);
+      font-size: 3.5rem;
+      color: rgba(255,255,255,.07);
+      line-height: 1;
+      margin-bottom: 1rem;
+      letter-spacing: .04em;
+    }
+
+    .expertise-name {
+      font-family: var(--body);
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.88);
+      margin-bottom: .8rem;
+      transition: color .25s;
+    }
+
+    .expertise-card:hover .expertise-name { color: #e87060; }
+
+    .expertise-desc {
+      font-size: .88rem;
+      color: rgba(255,255,255,.42);
+      line-height: 1.7;
+      transition: color .25s;
+    }
+
+    .expertise-card:hover .expertise-desc { color: rgba(255,255,255,.62); }
+
+    /* ─── CERTIFICATIONS ─────────────────────────────── */
+    #certifications {
+      padding: 6rem 3rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .cert-layout {
+      display: grid;
+      grid-template-columns: 26rem 1fr;
+      gap: 5rem;
+      margin-top: 3rem;
+      align-items: start;
+    }
+
+    .cert-intro {
+      font-family: var(--serif);
+      font-size: 1.12rem;
+      font-style: italic;
+      color: var(--ink-mid);
+      line-height: 1.75;
+      border-left: 3px solid var(--red);
+      padding-left: 1.5rem;
+    }
+
+    .edu-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-top: 1.8rem;
+    }
+
+    .edu-tag {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: .82rem;
+      color: var(--ink-soft);
+      padding: .5rem 1rem;
+      background: var(--bg-warm);
+      border: 1px solid var(--rule);
+    }
+
+    .cert-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+    }
+
+    .cert-tag {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      padding: .6rem 1.2rem;
+      border: 1.5px solid var(--rule);
+      color: var(--ink-mid);
+      transition: all .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cert-tag::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--red);
+      transform: scaleY(0);
+      transition: transform .25s;
+    }
+
+    .cert-tag:hover { border-color: var(--red); color: var(--red); background: rgba(192,57,43,.04); }
+    .cert-tag:hover::before { transform: scaleY(1); }
+
+    /* ─── CONTACT ────────────────────────────────────── */
+    #contact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .contact-left {
+      padding: 6rem 4rem 6rem 3rem;
+      border-right: 1px solid var(--rule);
+      background: var(--bg-warm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .contact-headline {
+      font-family: var(--display);
+      font-size: clamp(3.5rem, 7vw, 7rem);
+      letter-spacing: .04em;
+      color: var(--navy);
+      line-height: .88;
+    }
+
+    .contact-headline span {
+      display: block;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      letter-spacing: -.01em;
+      color: var(--red);
+      line-height: 1.1;
+    }
+
+    .contact-note {
+      font-size: .9rem;
+      color: var(--ink-soft);
+      margin-top: 2.5rem;
+      line-height: 1.7;
+      max-width: 34ch;
+    }
+
+    .contact-right {
+      padding: 6rem 3rem 6rem 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      padding: 1.8rem 0;
+      border-bottom: 1px solid var(--rule);
+      transition: padding-left .25s;
+    }
+
+    .contact-item:first-child { border-top: 1px solid var(--rule); }
+    .contact-item:hover { padding-left: .5rem; }
+
+    .contact-type {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+
+    .contact-val {
+      font-family: var(--serif);
+      font-size: 1.12rem;
+      color: var(--ink);
+      transition: color .2s;
+    }
+
+    .contact-val:hover { color: var(--red); }
+
+    /* ─── FOOTER ─────────────────────────────────────── */
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      background: var(--ink);
+      color: rgba(255,255,255,.3);
+    }
+
+    .footer-left {
+      font-family: var(--display);
+      font-size: .85rem;
+      letter-spacing: .14em;
+      color: rgba(255,255,255,.5);
+    }
+
+    .footer-right {
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
     }
 
     /* ─── RESPONSIVE ─────────────────────────────────── */
-    @media (max-width: 900px) {
-      nav { padding: 1.2rem 1.5rem; }
-      .nav-links { gap: 1.2rem; }
+    @media (max-width: 960px) {
+      .topbar { padding: 1rem 1.5rem; }
+      .topbar-badge { display: none; }
 
-      #hero { grid-template-columns: 1fr; padding-top: 6rem; }
-      .hero-right { display: none; }
-      .hero-left { padding: 3rem 1.5rem 4rem; }
+      #hero { padding-top: 3.5rem; }
+      .hero-main { grid-template-columns: 1fr; padding: 3rem 1.5rem 2rem; gap: 2rem; }
+      .hero-ticker { grid-template-columns: repeat(2, 1fr); }
+      .ticker-cell { padding: 1.5rem; }
 
-      #about { grid-template-columns: 1fr; padding: 4rem 1.5rem; }
-      .about-label { writing-mode: horizontal-tb; transform: none; margin-bottom: 1rem; }
-      .about-content { padding-left: 0; border-left: none; border-top: 1px solid var(--rule); padding-top: 2rem; }
+      #about { grid-template-columns: 1fr; }
+      .about-sidebar { display: none; }
+      .about-left { padding: 4rem 1.5rem; border-right: none; border-bottom: 1px solid var(--rule); }
+      .about-right { padding: 4rem 1.5rem; }
 
       #impact { grid-template-columns: 1fr; }
       .impact-card { border-right: none; border-bottom: 1px solid var(--rule); }
+      .impact-card:last-child { border-bottom: none; }
 
-      .exp-item { grid-template-columns: 1fr; gap: 1rem; }
-      .exp-body { border-left: none; padding-left: 0; padding-top: 1rem; border-top: 1px solid var(--rule); }
+      .exp-item { grid-template-columns: 1fr; gap: 1.5rem; }
+      .exp-body { border-left: none; padding-left: 0; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
 
       .expertise-grid { grid-template-columns: 1fr 1fr; }
-      .expertise-card:nth-child(2n) { border-right: none; }
-      .expertise-card:nth-child(3n) { border-right: 1px solid var(--rule); }
 
-      #contact { grid-template-columns: 1fr; gap: 3rem; }
-      #experience, #expertise, #certifications, #contact { padding: 4rem 1.5rem; }
+      .cert-layout { grid-template-columns: 1fr; gap: 2rem; }
+
+      #contact { grid-template-columns: 1fr; }
+      .contact-left { padding: 4rem 1.5rem 3rem; border-right: none; border-bottom: 1px solid var(--rule); }
+      .contact-right { padding: 3rem 1.5rem 4rem; }
+
+      #experience, #expertise, #certifications { padding: 4rem 1.5rem; }
     }
 
     @media (max-width: 540px) {
+      .hero-ticker { grid-template-columns: 1fr 1fr; }
       .expertise-grid { grid-template-columns: 1fr; }
-      .expertise-card { border-right: none; }
+      .topbar-nav { display: none; }
     }
   </style>
 </head>
 <body>
+<div class="site-wrap">
 
-  <!-- NAV -->
-  <nav>
-    <span class="nav-logo">RKS</span>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#experience">Work</a></li>
-      <li><a href="#expertise">Expertise</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-brand">RKS</div>
+    <nav>
+      <ul class="topbar-nav">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#expertise">Expertise</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <a href="mailto:sharma06raja@gmail.com" class="topbar-badge">Hire Me</a>
+  </header>
 
   <!-- HERO -->
   <section id="hero">
-    <div class="hero-bg-num">15</div>
-
-    <div class="hero-left">
-      <p class="hero-eyebrow">Security Architect &amp; Product Security Leader</p>
-      <h1 class="hero-name">
-        Raja<br>Kumar<br><em>Sharma</em>
-      </h1>
-      <p class="hero-intro">
-        Fifteen years securing what the world's most scrutinised financial, healthcare, and cloud platforms run on — from Goldman Sachs trading infrastructure to Oracle Cloud's core services.
-      </p>
-      <div class="hero-cta">
-        <a href="#contact" class="btn">Get in touch</a>
-        <a href="#experience" class="btn btn-ghost">View work</a>
+    <div class="hero-main">
+      <div>
+        <div class="hero-display">
+          RAJA<br>KUMAR<br><span class="line-italic">Sharma</span>
+        </div>
       </div>
-    </div>
 
-    <div class="hero-right">
-      <div class="hero-stats">
-        <div class="stat-item reveal">
-          <div class="stat-num">15+</div>
-          <div class="stat-label">Years in Cybersecurity</div>
+      <div class="hero-right-col">
+        <div class="hero-meta">
+          <div class="hero-meta-row">Cybersecurity Architect</div>
+          <div class="hero-meta-row">Product Security Leader</div>
+          <div class="hero-meta-row">DevSecOps Practitioner</div>
+          <div class="hero-meta-row">Hyderabad, India — Global</div>
         </div>
-        <div class="stat-item reveal" style="transition-delay:.1s">
-          <div class="stat-num">40%</div>
-          <div class="stat-label">Vuln Backlog Cut, 3 Months</div>
-        </div>
-        <div class="stat-item reveal" style="transition-delay:.2s">
-          <div class="stat-num">60%</div>
-          <div class="stat-label">AppSec Champion Uplift</div>
-        </div>
-        <div class="stat-item reveal" style="transition-delay:.3s">
-          <div class="stat-num">F100</div>
-          <div class="stat-label">Client Scale</div>
+        <p class="hero-tagline">
+          Fifteen years securing what Fortune 100 enterprises run on — from Goldman Sachs trading infrastructure to Oracle Cloud's core platform.
+        </p>
+        <div class="hero-ctas">
+          <a href="#contact" class="btn btn-primary">Get in Touch</a>
+          <a href="#experience" class="btn btn-outline">View Work</a>
         </div>
       </div>
     </div>
 
-    <div class="hero-line"></div>
+    <div class="hero-ticker">
+      <div class="ticker-cell">
+        <div class="ticker-num">15+</div>
+        <div class="ticker-label">Years in Cybersecurity</div>
+      </div>
+      <div class="ticker-cell">
+        <div class="ticker-num">40%</div>
+        <div class="ticker-label">Vuln Backlog Reduction</div>
+      </div>
+      <div class="ticker-cell">
+        <div class="ticker-num">60%</div>
+        <div class="ticker-label">AppSec Proficiency Uplift</div>
+      </div>
+      <div class="ticker-cell">
+        <div class="ticker-num">F100</div>
+        <div class="ticker-label">Enterprise Scale Delivered</div>
+      </div>
+    </div>
   </section>
 
   <!-- MARQUEE -->
   <div class="marquee-wrap">
     <div class="marquee-track">
-      <span class="marquee-text">Product Security <span class="sep">✦</span> DevSecOps <span class="sep">✦</span> Cloud Architecture <span class="sep">✦</span> AI / LLM Security <span class="sep">✦</span> Threat Modeling <span class="sep">✦</span> Secure SDLC <span class="sep">✦</span> CISSP <span class="sep">✦</span> Goldman Sachs <span class="sep">✦</span> Oracle Cloud <span class="sep">✦</span> Cigna <span class="sep">✦</span> Deloitte <span class="sep">✦</span></span>
-      <span class="marquee-text" aria-hidden="true">Product Security <span class="sep">✦</span> DevSecOps <span class="sep">✦</span> Cloud Architecture <span class="sep">✦</span> AI / LLM Security <span class="sep">✦</span> Threat Modeling <span class="sep">✦</span> Secure SDLC <span class="sep">✦</span> CISSP <span class="sep">✦</span> Goldman Sachs <span class="sep">✦</span> Oracle Cloud <span class="sep">✦</span> Cigna <span class="sep">✦</span> Deloitte <span class="sep">✦</span></span>
+      <span class="marquee-text">PRODUCT SECURITY <span class="dot">✦</span> DEVSECOPS <span class="dot">✦</span> AI/LLM RISK <span class="dot">✦</span> CLOUD ARCHITECTURE <span class="dot">✦</span> THREAT MODELING <span class="dot">✦</span> NIST AI RMF <span class="dot">✦</span> PCI-DSS <span class="dot">✦</span> GOLDMAN SACHS <span class="dot">✦</span> ORACLE OCI <span class="dot">✦</span> CIGNA <span class="dot">✦</span> DELOITTE <span class="dot">✦</span></span>
+      <span class="marquee-text" aria-hidden="true">PRODUCT SECURITY <span class="dot">✦</span> DEVSECOPS <span class="dot">✦</span> AI/LLM RISK <span class="dot">✦</span> CLOUD ARCHITECTURE <span class="dot">✦</span> THREAT MODELING <span class="dot">✦</span> NIST AI RMF <span class="dot">✦</span> PCI-DSS <span class="dot">✦</span> GOLDMAN SACHS <span class="dot">✦</span> ORACLE OCI <span class="dot">✦</span> CIGNA <span class="dot">✦</span> DELOITTE <span class="dot">✦</span></span>
     </div>
   </div>
 
   <!-- ABOUT -->
   <section id="about">
-    <div class="about-label">About</div>
-    <div class="about-content">
-      <h2 class="section-title reveal">Security that<br>enables, not<br><em>constrains.</em></h2>
-      <p class="about-text reveal" style="transition-delay:.1s">
-        I am a Product Security Architect who started as a software developer — which means I understand code as a practitioner, not just an auditor. That dual perspective shapes everything: the guardrails I build are precise enough to stop real threats and light enough not to slow engineering teams down.
-      </p>
-      <p class="about-text reveal" style="transition-delay:.2s">
-        From designing OCI cloud security patterns to embedding AI guardrails inside Goldman Sachs' DSML platform, I anchor security inside the product — not as an afterthought. My north star is a measurable, continuously improving security posture that business stakeholders can see and trust.
-      </p>
-      <div class="tag-row reveal" style="transition-delay:.25s">
-        <span class="tag">AWS Security</span>
-        <span class="tag">Oracle OCI</span>
-        <span class="tag">AI/LLM Risk</span>
-        <span class="tag">NIST 800-53</span>
-        <span class="tag">PCI-DSS</span>
-        <span class="tag">OWASP ASVS</span>
-        <span class="tag">GitLab CI/CD</span>
-        <span class="tag">SAST / SCA</span>
-        <span class="tag">IaC Security</span>
-        <span class="tag">Kubernetes</span>
-        <span class="tag">API Security</span>
-        <span class="tag">MCP Security</span>
+    <div class="about-sidebar">PROFILE</div>
+
+    <div class="about-left">
+      <p class="section-label reveal">01 — About</p>
+      <h2 class="section-title reveal" style="transition-delay:.08s">
+        SECURITY<br><em>that enables,</em><br>NOT BLOCKS
+      </h2>
+      <div class="about-body reveal" style="transition-delay:.16s">
+        <p>I started as a software developer — which means I understand code as a practitioner, not just an auditor. That dual perspective shapes everything I build: guardrails precise enough to stop real threats, light enough not to slow engineering teams down.</p>
+        <p>From designing Oracle Cloud security patterns to embedding AI guardrails inside Goldman Sachs' DSML platform, I anchor security inside the product — not bolted on as an afterthought.</p>
+      </div>
+    </div>
+
+    <div class="about-right">
+      <p class="section-label reveal">Core Capabilities</p>
+      <div class="skills-list reveal" style="transition-delay:.08s">
+        <div class="skill-row">Product &amp; Application Security Architecture</div>
+        <div class="skill-row">Secure-SDLC &amp; DevSecOps Integration</div>
+        <div class="skill-row">Cloud Security — AWS, Oracle OCI</div>
+        <div class="skill-row">AI / LLM Security &amp; Governance (NIST AI RMF)</div>
+        <div class="skill-row">SAST, SCA, Secret Scanning, Container Security</div>
+        <div class="skill-row">Threat Modeling (STRIDE) &amp; Risk Assessment</div>
+        <div class="skill-row">KRI Dashboards &amp; Security Metrics</div>
+        <div class="skill-row">PCI-DSS, OWASP ASVS, NIST 800-53</div>
+        <div class="skill-row">Team Leadership &amp; AppSec Champion Programmes</div>
+        <div class="skill-row">API, Mobile &amp; Container Security</div>
       </div>
     </div>
   </section>
@@ -807,112 +985,112 @@
   <section id="impact">
     <div class="impact-card reveal">
       <div class="impact-num">40%</div>
-      <div class="impact-desc">Vulnerability Backlog<br>Reduction</div>
-      <p class="impact-detail">Achieved within 3 months at Goldman Sachs via targeted fix-a-thon programmes and automated remediation workflows.</p>
+      <div class="impact-label">Vulnerability Backlog Cut</div>
+      <p class="impact-detail">Achieved in 3 months at Goldman Sachs through organisation-wide hackathons and automated triage workflows embedded in GitLab CI/CD.</p>
     </div>
-    <div class="impact-card reveal" style="transition-delay:.12s">
+    <div class="impact-card reveal" style="transition-delay:.1s">
       <div class="impact-num">60%</div>
-      <div class="impact-desc">AppSec Champion<br>Proficiency Uplift</div>
-      <p class="impact-detail">Delivered in 6 months through a bespoke Secure-SDLC training programme covering IaC, container security, and threat modeling.</p>
+      <div class="impact-label">AppSec Proficiency Uplift</div>
+      <p class="impact-detail">Delivered in 6 months through a bespoke Secure-SDLC programme covering IaC, container security, and threat modeling with quizzing and demos.</p>
     </div>
-    <div class="impact-card reveal" style="transition-delay:.22s">
-      <div class="impact-num">Fortune<br>100</div>
-      <div class="impact-desc">Client Scale<br>Delivered</div>
-      <p class="impact-detail">Security architecture and DevSecOps programmes spanning Goldman Sachs, Oracle, and Cigna's global engineering organisations.</p>
+    <div class="impact-card reveal" style="transition-delay:.2s">
+      <div class="impact-num">F100</div>
+      <div class="impact-label">Fortune 100 Client Scale</div>
+      <p class="impact-detail">Security architecture and DevSecOps programmes spanning Goldman Sachs, Oracle, and Cigna — some of the world's most scrutinised technology environments.</p>
     </div>
   </section>
 
   <!-- EXPERIENCE -->
   <section id="experience">
     <div class="exp-header">
-      <h2 class="section-title reveal">Selected<br><em>Experience</em></h2>
-      <span class="mono muted reveal" style="transition-delay:.1s">2009 — Present</span>
+      <div>
+        <p class="section-label reveal">02 — Work</p>
+        <h2 class="section-title reveal" style="transition-delay:.08s">SELECTED<br><em>Experience</em></h2>
+      </div>
+      <div class="exp-count reveal" style="transition-delay:.12s">2009–</div>
     </div>
 
-    <div class="exp-timeline">
+    <div class="exp-list">
 
       <div class="exp-item reveal">
         <div class="exp-meta">
-          <div class="exp-year">2025 — Present</div>
-          <div class="exp-company">Evernorth<br>(Cigna Group)</div>
+          <div class="exp-years">2025 — NOW</div>
+          <div class="exp-company">Evernorth (Cigna Group)</div>
           <div class="exp-location">Hyderabad, IN</div>
         </div>
         <div class="exp-body">
           <div class="exp-role">Cyber Security Senior Advisor — BISO</div>
           <ul class="exp-bullets">
-            <li>Partner with HR &amp; Legal IT and Business Unit stakeholders to identify and remediate security risks, including AI/LLM risks, in line with Cigna security policies and standards.</li>
+            <li>Partner with HR &amp; Legal IT and Business Unit stakeholders to identify and remediate security risks, including AI/LLM risks, aligned with Cigna's security policies.</li>
             <li>Leading modernisation of Secure SDLC programmes and fostering a security-first engineering culture.</li>
             <li>Monitor KRI dashboards providing real-time visibility into application security posture and regulatory compliance.</li>
-            <li>Ensure alignment with PCI-DSS, HIPAA, and NIST AI RMF frameworks.</li>
+            <li>Ensuring alignment with PCI-DSS, HIPAA, and NIST AI RMF frameworks.</li>
           </ul>
         </div>
       </div>
 
       <div class="exp-item reveal">
         <div class="exp-meta">
-          <div class="exp-year">2022 — 2025</div>
-          <div class="exp-company">Goldman<br>Sachs</div>
+          <div class="exp-years">2022 — 2025</div>
+          <div class="exp-company">Goldman Sachs</div>
           <div class="exp-location">Hyderabad, IN</div>
         </div>
         <div class="exp-body">
           <div class="exp-role">Lead Security Architect — VP, Tech Risk</div>
           <ul class="exp-bullets">
-            <li>Drove enterprise DevSecOps integration — secret scanning, SAST, SCA, and container scanning embedded into GitLab CI/CD pipelines at scale.</li>
-            <li>Cut vulnerability backlog 40% in 3 months through organisation-wide hackathons and automated triage workflows.</li>
-            <li>Delivered a comprehensive Secure-SDLC training programme, raising AppSec Champion proficiency 60% in six months.</li>
+            <li>Drove enterprise DevSecOps integration — SAST, SCA, secret scanning, and container scanning embedded natively into GitLab CI/CD pipelines.</li>
+            <li>Cut vulnerability backlog 40% in 3 months through organisation-wide hackathons and automated remediation workflows.</li>
+            <li>Raised AppSec Champion proficiency 60% in six months through a comprehensive Secure-SDLC training programme.</li>
             <li>Collaborated with AI COE teams to implement LLM guardrails and GitHub Copilot security governance models.</li>
             <li>Built real-time KRI dashboards enabling data-driven security decisions across all business units.</li>
-            <li>Partnered with tooling vendors to reduce false-positive rates and optimise high-fidelity vulnerability detections.</li>
           </ul>
         </div>
       </div>
 
       <div class="exp-item reveal">
         <div class="exp-meta">
-          <div class="exp-year">2019 — 2022</div>
-          <div class="exp-company">Oracle<br>Cloud (OCI)</div>
+          <div class="exp-years">2019 — 2022</div>
+          <div class="exp-company">Oracle Cloud (OCI)</div>
           <div class="exp-location">Bangalore, IN</div>
         </div>
         <div class="exp-body">
           <div class="exp-role">Senior Security Architect — Product Security Engineer</div>
           <ul class="exp-bullets">
-            <li>Acted as primary risk advisory interface for OCI software development teams — secure design, vendor assessment, and vulnerability remediation.</li>
+            <li>Primary risk advisory interface for OCI software development teams — secure design, vendor assessment, and vulnerability remediation.</li>
             <li>Designed reusable secure architecture patterns and IaC templates standardising DevSecOps practices across cloud teams.</li>
             <li>Delivered Secure-SDLC programmes for cloud-native and AI/ML Data Science platforms.</li>
-            <li>Championed perpetual improvement of Oracle's Product Security Assurance Programme.</li>
+            <li>Championed Oracle's Product Security Assurance Programme across the organisation.</li>
           </ul>
         </div>
       </div>
 
       <div class="exp-item reveal">
         <div class="exp-meta">
-          <div class="exp-year">2014 — 2019</div>
-          <div class="exp-company">Deloitte<br>USI</div>
+          <div class="exp-years">2014 — 2019</div>
+          <div class="exp-company">Deloitte USI</div>
           <div class="exp-location">Hyderabad, IN</div>
         </div>
         <div class="exp-body">
           <div class="exp-role">Senior Consultant — Risk Advisory</div>
           <ul class="exp-bullets">
-            <li>Led end-to-end security assessment engagements: scoping, penetration testing, SAST/DAST, and threat modeling (STRIDE) for distributed applications.</li>
-            <li>Developed and enforced security standards and best practices adopted across engineering organisations.</li>
-            <li>Advised on compliance frameworks including PCI-DSS, OWASP ASVS, and NIST 800-53.</li>
-            <li>Conducted induction and upskilling sessions for new hires on VA/PT and secure code review.</li>
+            <li>Led end-to-end security assessment engagements: VA/PT, SAST/DAST, and threat modeling (STRIDE) for distributed applications.</li>
+            <li>Developed and enforced security standards adopted across engineering organisations.</li>
+            <li>Advised on PCI-DSS, OWASP ASVS, and NIST 800-53 compliance frameworks.</li>
           </ul>
         </div>
       </div>
 
       <div class="exp-item reveal">
         <div class="exp-meta">
-          <div class="exp-year">2009 — 2014</div>
-          <div class="exp-company">Wipro · NIC<br>· TCS</div>
+          <div class="exp-years">2009 — 2014</div>
+          <div class="exp-company">Wipro · NIC · TCS</div>
           <div class="exp-location">India</div>
         </div>
         <div class="exp-body">
           <div class="exp-role">Cyber Security Engineer — Application Security</div>
           <ul class="exp-bullets">
-            <li>Foundation roles spanning Java/J2EE development, OWASP ESAPI secure coding, vulnerability scanning, penetration testing, and secure code reviews.</li>
-            <li>Managed teams of 6+ security engineers; created checklists, test plans, and audit artefacts for NIC e-governance applications.</li>
-            <li>Automated reconnaissance tasks and security scanning workflows in Java, Python, and JavaScript.</li>
+            <li>Foundation roles spanning Java/J2EE development, OWASP ESAPI secure coding, VA/PT, and secure code reviews across BFS and e-governance domains.</li>
+            <li>Managed teams of 6+ security engineers; automated scanning workflows in Java, Python, and JavaScript.</li>
           </ul>
         </div>
       </div>
@@ -922,129 +1100,135 @@
 
   <!-- EXPERTISE -->
   <section id="expertise">
-    <h2 class="section-title reveal">Core<br><em>Expertise</em></h2>
+    <p class="section-label reveal">03 — Expertise</p>
+    <h2 class="section-title reveal" style="transition-delay:.08s">CORE<br><em>Disciplines</em></h2>
 
     <div class="expertise-grid">
-
       <div class="expertise-card reveal">
-        <div class="expertise-icon">🛡</div>
+        <div class="expertise-num">01</div>
         <div class="expertise-name">Product &amp; Application Security</div>
-        <p class="expertise-desc">Secure-by-design architecture reviews, threat modeling, and security patterns for cloud-native products at enterprise scale.</p>
+        <p class="expertise-desc">Secure-by-design architecture reviews, threat modeling, and reusable security patterns for cloud-native products at enterprise scale.</p>
       </div>
-
-      <div class="expertise-card reveal" style="transition-delay:.07s">
-        <div class="expertise-icon">⚙️</div>
+      <div class="expertise-card reveal" style="transition-delay:.06s">
+        <div class="expertise-num">02</div>
         <div class="expertise-name">DevSecOps &amp; Secure SDLC</div>
-        <p class="expertise-desc">Embedding SAST, SCA, secret scanning, and container scanning natively into CI/CD pipelines — with developer-friendly guardrails, not blockers.</p>
+        <p class="expertise-desc">Embedding SAST, SCA, secret scanning, and container scanning natively into CI/CD — developer-friendly guardrails, not blockers.</p>
       </div>
-
-      <div class="expertise-card reveal" style="transition-delay:.14s">
-        <div class="expertise-icon">☁️</div>
+      <div class="expertise-card reveal" style="transition-delay:.12s">
+        <div class="expertise-num">03</div>
         <div class="expertise-name">Cloud Security</div>
-        <p class="expertise-desc">AWS and Oracle OCI security architecture — IAM, VCN controls, Secrets Management, KMS, and migration risk assessment for hybrid environments.</p>
+        <p class="expertise-desc">AWS and Oracle OCI security architecture — IAM, VCN controls, Secrets Management, KMS, and enterprise cloud migration risk assessment.</p>
       </div>
-
-      <div class="expertise-card reveal" style="transition-delay:.21s">
-        <div class="expertise-icon">🤖</div>
+      <div class="expertise-card reveal" style="transition-delay:.18s">
+        <div class="expertise-num">04</div>
         <div class="expertise-name">AI / LLM Security</div>
-        <p class="expertise-desc">Governance models and guardrails for AI/LLM platforms, DSML pipelines, and agentic systems (including MCP) aligned to NIST AI RMF.</p>
+        <p class="expertise-desc">Governance models and guardrails for AI/LLM platforms, DSML pipelines, and agentic systems (MCP) aligned to NIST AI RMF.</p>
       </div>
-
-      <div class="expertise-card reveal" style="transition-delay:.28s">
-        <div class="expertise-icon">📊</div>
-        <div class="expertise-name">Risk Metrics &amp; KRI Dashboards</div>
+      <div class="expertise-card reveal" style="transition-delay:.24s">
+        <div class="expertise-num">05</div>
+        <div class="expertise-name">Risk Metrics &amp; KRIs</div>
         <p class="expertise-desc">Real-time security posture visibility through automated risk metrics that translate technical findings into actionable business intelligence.</p>
       </div>
-
-      <div class="expertise-card reveal" style="transition-delay:.35s">
-        <div class="expertise-icon">🎓</div>
-        <div class="expertise-name">Security Leadership &amp; Mentoring</div>
-        <p class="expertise-desc">Building AppSec champion programmes, running hack-a-thons, and coaching engineers and SMEs in secure coding and cloud security practices.</p>
+      <div class="expertise-card reveal" style="transition-delay:.30s">
+        <div class="expertise-num">06</div>
+        <div class="expertise-name">Security Leadership</div>
+        <p class="expertise-desc">Building AppSec champion programmes, running hackathons, and coaching engineers and SMEs in secure coding and cloud security practices.</p>
       </div>
-
     </div>
   </section>
 
   <!-- CERTIFICATIONS -->
   <section id="certifications">
-    <h2 class="section-title reveal">Credentials &amp;<br><em>Certifications</em></h2>
-    <div class="certs-grid reveal" style="transition-delay:.1s">
-      <span class="cert-pill">CISSP — (ISC)²</span>
-      <span class="cert-pill">AWS Certified AI Practitioner</span>
-      <span class="cert-pill">OCI Security Associate 2021</span>
-      <span class="cert-pill">OCI Generative AI Certified Professional</span>
-      <span class="cert-pill">OCI Architect Associate 2019</span>
-      <span class="cert-pill">Certified Ethical Hacker (CEH) v7</span>
-      <span class="cert-pill">SANS 522 — Web App Security</span>
-      <span class="cert-pill">SANS 542 — Web App PenTesting</span>
-      <span class="cert-pill">Certified AppSec Practitioner</span>
-      <span class="cert-pill">Checkmarx Certified Engineer (CxCE)</span>
-      <span class="cert-pill">Oracle Certified Java Programmer</span>
-      <span class="cert-pill">AI Security — Lakera</span>
-    </div>
-    <div class="tag-row reveal" style="margin-top:3rem; transition-delay:.15s">
-      <span class="tag mono">MCA — Hyderabad Central University</span>
-      <span class="tag mono">B.Sc. — Kakatiya University</span>
-      <span class="tag mono">Open to Relocation &amp; Remote (Global)</span>
+    <p class="section-label reveal">04 — Credentials</p>
+    <h2 class="section-title reveal" style="transition-delay:.08s">CERTS &amp;<br><em>Qualifications</em></h2>
+
+    <div class="cert-layout">
+      <div class="reveal" style="transition-delay:.1s">
+        <p class="cert-intro">
+          CISSP-certified with a breadth of specialisations spanning cloud, AI, ethical hacking, and application security — backed by an MCA from Hyderabad Central University.
+        </p>
+        <div class="edu-row">
+          <span class="edu-tag">MCA — Hyderabad Central University</span>
+          <span class="edu-tag">B.Sc. — Kakatiya University</span>
+          <span class="edu-tag">Open to Relocation &amp; Remote</span>
+        </div>
+      </div>
+      <div class="cert-grid reveal" style="transition-delay:.15s">
+        <span class="cert-tag">CISSP — (ISC)²</span>
+        <span class="cert-tag">AWS Certified AI Practitioner</span>
+        <span class="cert-tag">OCI Security Associate 2021</span>
+        <span class="cert-tag">OCI Generative AI Professional</span>
+        <span class="cert-tag">OCI Architect Associate 2019</span>
+        <span class="cert-tag">Certified Ethical Hacker (CEH)</span>
+        <span class="cert-tag">SANS 522 — Web App Security</span>
+        <span class="cert-tag">SANS 542 — Web App PenTesting</span>
+        <span class="cert-tag">Certified AppSec Practitioner</span>
+        <span class="cert-tag">Checkmarx Certified Engineer</span>
+        <span class="cert-tag">Oracle Certified Java Programmer</span>
+        <span class="cert-tag">AI Security — Lakera</span>
+      </div>
     </div>
   </section>
 
   <!-- CONTACT -->
   <section id="contact">
-    <div>
-      <h2 class="contact-headline reveal">
-        Let's build<br>something<br><em>secure.</em>
-      </h2>
+    <div class="contact-left">
+      <div>
+        <p class="section-label reveal">05 — Contact</p>
+        <h2 class="contact-headline reveal" style="transition-delay:.08s">
+          LET'S BUILD<br>SOMETHING<br><span>secure.</span>
+        </h2>
+        <p class="contact-note reveal" style="transition-delay:.16s">
+          Available for Staff / Principal / Lead Security Architect roles globally. Open to relocation and remote-first positions.
+        </p>
+      </div>
     </div>
-    <div class="contact-links">
-      <div class="contact-row reveal">
+
+    <div class="contact-right">
+      <div class="contact-item reveal">
         <span class="contact-type">Email</span>
         <a href="mailto:sharma06raja@gmail.com" class="contact-val">sharma06raja@gmail.com</a>
       </div>
-      <div class="contact-row reveal" style="transition-delay:.08s">
+      <div class="contact-item reveal" style="transition-delay:.07s">
         <span class="contact-type">Phone</span>
         <a href="tel:+917093902855" class="contact-val">+91 70939 02855</a>
       </div>
-      <div class="contact-row reveal" style="transition-delay:.16s">
+      <div class="contact-item reveal" style="transition-delay:.14s">
         <span class="contact-type">LinkedIn</span>
         <a href="https://linkedin.com/in/rrkshar13" target="_blank" rel="noopener" class="contact-val">linkedin.com/in/rrkshar13</a>
       </div>
-      <div class="contact-row reveal" style="transition-delay:.24s">
+      <div class="contact-item reveal" style="transition-delay:.21s">
         <span class="contact-type">Location</span>
-        <span class="contact-val">Hyderabad, India — willing to relocate globally</span>
+        <span class="contact-val">Hyderabad, India — Global</span>
       </div>
     </div>
   </section>
 
-  <footer class="footer-bar">
-    <span class="footer-copy">© 2025 Raja Kumar Sharma — Cybersecurity Architect</span>
-    <span class="footer-copy">CISSP · AWS AI · OCI</span>
+  <footer>
+    <span class="footer-left">RAJA KUMAR SHARMA</span>
+    <span class="footer-right">CISSP · AWS AI · OCI · © 2025</span>
   </footer>
 
-  <script>
-    // Scroll reveal
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.12 });
+</div>
 
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // Nav background on scroll
-    const nav = document.querySelector('nav');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 60) {
-        nav.style.background = 'rgba(13,13,11,.97)';
-        nav.style.borderBottom = '1px solid rgba(200,135,58,.12)';
-      } else {
-        nav.style.background = '';
-        nav.style.borderBottom = '';
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
       }
-    }, { passive: true });
-  </script>
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  const topbar = document.querySelector('.topbar');
+  window.addEventListener('scroll', () => {
+    topbar.style.boxShadow = window.scrollY > 40
+      ? '0 2px 20px rgba(17,17,24,.09)'
+      : 'none';
+  }, { passive: true });
+</script>
 </body>
 </html>
