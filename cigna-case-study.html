@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study — Evernorth BISO | Raja Kumar Sharma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Epilogue:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS (matching portfolio) ────────────────── */
+    :root {
+      --bg:        #f7f4ef;
+      --bg-warm:   #efeae0;
+      --bg-dark:   #e8e2d6;
+      --ink:       #111118;
+      --ink-mid:   #3a3a4a;
+      --ink-soft:  #6b6b7e;
+      --navy:      #1a1a3e;
+      --red:       #c0392b;
+      --red-lt:    #e74c3c;
+      --rule:      rgba(17,17,24,.12);
+      --rule-red:  rgba(192,57,43,.18);
+
+      --display: 'Bebas Neue', sans-serif;
+      --serif:   'Playfair Display', Georgia, serif;
+      --body:    'Epilogue', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--body);
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* Dot grid */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(17,17,24,.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .site-wrap { position: relative; z-index: 1; }
+
+    /* ─── TOP BAR ────────────────────────────────────── */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      background: var(--bg);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .9rem 3rem;
+      transition: box-shadow .3s;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .topbar-brand {
+      font-family: var(--display);
+      font-size: 1.2rem;
+      letter-spacing: .18em;
+      color: var(--navy);
+    }
+
+    .topbar-sep {
+      width: 1px;
+      height: 1.2rem;
+      background: var(--rule);
+    }
+
+    .topbar-crumb {
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .topbar-crumb span {
+      color: var(--red);
+    }
+
+    .back-link {
+      font-family: var(--body);
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      transition: color .2s;
+    }
+
+    .back-link:hover { color: var(--navy); }
+
+    .back-link::before {
+      content: '←';
+      font-size: .8rem;
+    }
+
+    /* ─── HERO / COVER ───────────────────────────────── */
+    #cover {
+      min-height: 100svh;
+      padding-top: 3.8rem;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      border-bottom: 2px solid var(--ink);
+      position: relative;
+      overflow: hidden;
+      background: var(--navy);
+    }
+
+    /* Faint circuit/grid pattern on dark bg */
+    #cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .cover-inner {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 4rem;
+      padding: 5rem 3rem 3rem;
+      align-items: end;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cover-tag {
+      font-family: var(--body);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--red-lt);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+    }
+
+    .cover-tag::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 2px;
+      background: var(--red-lt);
+    }
+
+    .cover-title {
+      font-family: var(--display);
+      font-size: clamp(4rem, 9vw, 9rem);
+      letter-spacing: .03em;
+      color: #fff;
+      line-height: .88;
+    }
+
+    .cover-title em {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: .58em;
+      color: rgba(255,255,255,.5);
+      display: block;
+      letter-spacing: -.01em;
+      line-height: 1.3;
+      margin-top: .3rem;
+    }
+
+    .cover-right {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      justify-content: flex-end;
+      padding-bottom: .5rem;
+    }
+
+    .cover-meta-block {
+      border-left: 2px solid rgba(255,255,255,.12);
+      padding-left: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .cover-meta-item {}
+
+    .cover-meta-label {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+      margin-bottom: .2rem;
+    }
+
+    .cover-meta-val {
+      font-size: .9rem;
+      font-weight: 500;
+      color: rgba(255,255,255,.8);
+      line-height: 1.4;
+    }
+
+    /* Cover stat strip */
+    .cover-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid rgba(255,255,255,.08);
+      position: relative;
+      z-index: 2;
+    }
+
+    .cstat {
+      padding: 2rem 3rem;
+      border-right: 1px solid rgba(255,255,255,.07);
+    }
+
+    .cstat:last-child { border-right: none; }
+
+    .cstat-num {
+      font-family: var(--display);
+      font-size: 2.8rem;
+      letter-spacing: .04em;
+      color: var(--red-lt);
+      line-height: 1;
+      margin-bottom: .3rem;
+    }
+
+    .cstat-label {
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+    }
+
+    /* ─── READING LAYOUT ─────────────────────────────── */
+    .page-body {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 0;
+      min-height: 100vh;
+    }
+
+    /* Sticky left nav */
+    .sidebar-nav {
+      border-right: 1px solid var(--rule);
+      padding: 4rem 2rem 4rem 3rem;
+      position: sticky;
+      top: 3.8rem;
+      height: calc(100vh - 3.8rem);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      align-self: start;
+    }
+
+    .sidenav-label {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 1rem;
+      padding-bottom: .8rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .sidenav-item {
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      color: var(--ink-soft);
+      padding: .4rem .6rem;
+      border-left: 2px solid transparent;
+      transition: all .2s;
+      cursor: pointer;
+      line-height: 1.4;
+    }
+
+    .sidenav-item:hover,
+    .sidenav-item.active {
+      color: var(--navy);
+      border-left-color: var(--red);
+      padding-left: .9rem;
+      background: rgba(192,57,43,.04);
+    }
+
+    /* Main content column */
+    .content-col {
+      padding: 5rem 5rem 8rem 5rem;
+      max-width: 900px;
+    }
+
+    /* ─── CONTENT COMPONENTS ─────────────────────────── */
+
+    /* Chapter header */
+    .chapter {
+      margin-bottom: 5rem;
+      scroll-margin-top: 5rem;
+    }
+
+    .chapter-num {
+      font-family: var(--display);
+      font-size: .85rem;
+      letter-spacing: .2em;
+      color: var(--red);
+      margin-bottom: .6rem;
+    }
+
+    .chapter-title {
+      font-family: var(--display);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      letter-spacing: .04em;
+      color: var(--navy);
+      line-height: .9;
+      margin-bottom: 2.5rem;
+    }
+
+    .chapter-title em {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: .65em;
+      letter-spacing: -.01em;
+      color: var(--red);
+      display: block;
+      line-height: 1.3;
+    }
+
+    /* Divider */
+    .chapter-rule {
+      width: 100%;
+      height: 1px;
+      background: var(--rule);
+      margin-bottom: 2.5rem;
+    }
+
+    /* Body copy */
+    .prose {
+      font-size: 1.05rem;
+      color: var(--ink-mid);
+      line-height: 1.9;
+      font-weight: 400;
+    }
+
+    .prose p + p { margin-top: 1.4rem; }
+
+    .prose strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* Pull quote */
+    .pullquote {
+      margin: 3rem 0;
+      border-left: 4px solid var(--red);
+      padding: 1.5rem 2rem;
+      background: var(--bg-warm);
+    }
+
+    .pullquote p {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--navy);
+      line-height: 1.6;
+    }
+
+    .pullquote cite {
+      display: block;
+      margin-top: .8rem;
+      font-family: var(--body);
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      font-style: normal;
+    }
+
+    /* Callout box */
+    .callout {
+      margin: 2.5rem 0;
+      border: 1.5px solid var(--rule);
+      padding: 2rem 2.5rem;
+      position: relative;
+    }
+
+    .callout::before {
+      content: attr(data-label);
+      position: absolute;
+      top: -1px;
+      left: 2rem;
+      transform: translateY(-50%);
+      background: var(--bg);
+      padding: 0 .6rem;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+
+    .callout-title {
+      font-family: var(--body);
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: .8rem;
+    }
+
+    .callout p {
+      font-size: .92rem;
+      color: var(--ink-mid);
+      line-height: 1.75;
+    }
+
+    /* Two-column text layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin: 2rem 0;
+    }
+
+    /* Challenge/solution pair */
+    .cs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--rule);
+      margin: 2.5rem 0;
+      border: 1px solid var(--rule);
+    }
+
+    .cs-cell {
+      background: var(--bg);
+      padding: 2rem 2.5rem;
+    }
+
+    .cs-cell.solution { background: var(--bg-warm); }
+
+    .cs-cell-label {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: .8rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .cs-cell-label .icon { font-size: .9rem; }
+
+    .cs-cell-title {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: .7rem;
+      line-height: 1.3;
+    }
+
+    .cs-cell p {
+      font-size: .9rem;
+      color: var(--ink-mid);
+      line-height: 1.75;
+    }
+
+    /* Timeline */
+    .timeline {
+      margin: 2.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 9rem 1fr;
+      gap: 0;
+      border-left: 2px solid var(--rule);
+      margin-left: 1rem;
+      position: relative;
+      padding-bottom: 2rem;
+    }
+
+    .tl-item:last-child { padding-bottom: 0; border-left-color: transparent; }
+
+    .tl-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--red);
+      position: absolute;
+      left: -6px;
+      top: .3rem;
+    }
+
+    .tl-time {
+      font-family: var(--display);
+      font-size: .85rem;
+      letter-spacing: .1em;
+      color: var(--red);
+      padding: .25rem 1rem 0 1.5rem;
+    }
+
+    .tl-content {
+      padding: 0 0 0 1rem;
+    }
+
+    .tl-title {
+      font-family: var(--body);
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: .35rem;
+    }
+
+    .tl-desc {
+      font-size: .87rem;
+      color: var(--ink-mid);
+      line-height: 1.7;
+    }
+
+    /* Metric cards */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin: 2.5rem 0;
+    }
+
+    .metric-card {
+      background: var(--bg);
+      padding: 2rem 1.8rem;
+      transition: background .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--red);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .35s cubic-bezier(.16,1,.3,1);
+    }
+
+    .metric-card:hover { background: rgba(192,57,43,.03); }
+    .metric-card:hover::before { transform: scaleX(1); }
+
+    .metric-num {
+      font-family: var(--display);
+      font-size: 3.5rem;
+      letter-spacing: .03em;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: .4rem;
+      transition: color .25s;
+    }
+
+    .metric-card:hover .metric-num { color: var(--red); }
+
+    .metric-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: .6rem;
+    }
+
+    .metric-desc {
+      font-size: .82rem;
+      color: var(--ink-mid);
+      line-height: 1.6;
+    }
+
+    /* Bullet list styled */
+    .styled-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+      margin: 1.5rem 0;
+    }
+
+    .styled-list li {
+      font-size: .95rem;
+      color: var(--ink-mid);
+      line-height: 1.75;
+      padding-left: 1.6rem;
+      position: relative;
+    }
+
+    .styled-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: .75em;
+      width: .7rem;
+      height: 1.5px;
+      background: var(--red);
+    }
+
+    /* Framework badge row */
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin: 1.5rem 0;
+    }
+
+    .badge {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .45rem 1rem;
+      border: 1.5px solid var(--rule);
+      color: var(--ink-mid);
+      transition: all .2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--red);
+      transform: scaleY(0);
+      transition: transform .2s;
+    }
+
+    .badge:hover { border-color: var(--red); color: var(--red); }
+    .badge:hover::before { transform: scaleY(1); }
+
+    /* Highlight text block */
+    .highlight-block {
+      background: var(--navy);
+      color: #fff;
+      padding: 3rem;
+      margin: 3rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .highlight-block::after {
+      content: '"';
+      position: absolute;
+      right: 1rem;
+      top: -2rem;
+      font-family: var(--serif);
+      font-size: 14rem;
+      color: rgba(255,255,255,.04);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .highlight-block p {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.4rem;
+      line-height: 1.6;
+      color: rgba(255,255,255,.9);
+      position: relative;
+      z-index: 1;
+    }
+
+    .highlight-block .attr {
+      margin-top: 1.2rem;
+      font-family: var(--body);
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+      font-style: normal;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Section divider with label */
+    .labeled-rule {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 4rem 0 3rem;
+    }
+
+    .labeled-rule .lr-text {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--red);
+      white-space: nowrap;
+    }
+
+    .labeled-rule::after {
+      content: '';
+      display: block;
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    /* ─── FOOTER STRIP ───────────────────────────────── */
+    .case-footer {
+      background: var(--navy);
+      border-top: 2px solid var(--ink);
+      padding: 4rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .cf-left {}
+
+    .cf-headline {
+      font-family: var(--display);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      letter-spacing: .04em;
+      color: #fff;
+      line-height: .9;
+      margin-bottom: 1rem;
+    }
+
+    .cf-headline span {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: .65em;
+      color: rgba(255,255,255,.45);
+      display: block;
+      line-height: 1.4;
+    }
+
+    .cf-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .cf-btn {
+      font-family: var(--body);
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: .8rem 1.8rem;
+      transition: all .25s;
+    }
+
+    .cf-btn-light {
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.8);
+      border: 1.5px solid rgba(255,255,255,.15);
+    }
+
+    .cf-btn-light:hover {
+      background: rgba(255,255,255,.18);
+      color: #fff;
+    }
+
+    .cf-btn-red {
+      background: var(--red);
+      color: #fff;
+      border: 1.5px solid var(--red);
+    }
+
+    .cf-btn-red:hover { background: var(--red-lt); border-color: var(--red-lt); }
+
+    .cf-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .cf-contact-row {
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .cf-contact-label {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+    }
+
+    .cf-contact-val {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: rgba(255,255,255,.75);
+      transition: color .2s;
+    }
+
+    .cf-contact-val:hover { color: var(--red-lt); }
+
+    /* ─── SCROLL REVEAL ──────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .65s cubic-bezier(.16,1,.3,1), transform .65s cubic-bezier(.16,1,.3,1);
+    }
+
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .cover-inner { grid-template-columns: 1fr; }
+      .cover-right { display: none; }
+      .cover-stats { grid-template-columns: repeat(2, 1fr); }
+
+      .page-body { grid-template-columns: 1fr; }
+      .sidebar-nav { display: none; }
+      .content-col { padding: 3rem 1.5rem 5rem; max-width: 100%; }
+
+      .two-col { grid-template-columns: 1fr; gap: 1.5rem; }
+      .cs-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+
+      .case-footer { grid-template-columns: 1fr; gap: 3rem; }
+    }
+
+    @media (max-width: 600px) {
+      .topbar { padding: 1rem 1.5rem; }
+      .cover-stats { grid-template-columns: 1fr 1fr; }
+      .metrics-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Progress bar */
+    #progress-bar {
+      position: fixed;
+      top: 3.8rem;
+      left: 0;
+      height: 2px;
+      background: var(--red);
+      z-index: 300;
+      width: 0%;
+      transition: width .1s linear;
+    }
+  </style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div class="site-wrap">
+
+  <!-- TOP BAR -->
+  <header class="topbar" id="topbar">
+    <div class="topbar-left">
+      <a href="index.html" class="topbar-brand">RKS</a>
+      <div class="topbar-sep"></div>
+      <div class="topbar-crumb">Case Study <span>/ Evernorth — Cigna Group</span></div>
+    </div>
+    <a href="index.html" class="back-link">Back to Portfolio</a>
+  </header>
+
+  <!-- COVER -->
+  <section id="cover">
+    <div class="cover-inner">
+      <div>
+        <div class="cover-tag">Case Study — Strategic Leadership</div>
+        <h1 class="cover-title">
+          BUSINESS<br>INFORMATION<br>SECURITY<br>OFFICER
+          <em>Evernorth · Cigna Group · 2025–Present</em>
+        </h1>
+      </div>
+
+      <div class="cover-right">
+        <div class="cover-meta-block">
+          <div class="cover-meta-item">
+            <div class="cover-meta-label">Organisation</div>
+            <div class="cover-meta-val">Evernorth Health Services (Cigna Group)</div>
+          </div>
+          <div class="cover-meta-item">
+            <div class="cover-meta-label">Role</div>
+            <div class="cover-meta-val">Cyber Security Senior Advisor — BISO</div>
+          </div>
+          <div class="cover-meta-item">
+            <div class="cover-meta-label">Scope</div>
+            <div class="cover-meta-val">HR &amp; Legal IT · AI/LLM Risk · Secure SDLC · Compliance</div>
+          </div>
+          <div class="cover-meta-item">
+            <div class="cover-meta-label">Frameworks Applied</div>
+            <div class="cover-meta-val">NIST AI RMF · PCI-DSS · HIPAA · OWASP ASVS</div>
+          </div>
+          <div class="cover-meta-item">
+            <div class="cover-meta-label">Status</div>
+            <div class="cover-meta-val">Active — Ongoing (2025–Present)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-stats">
+      <div class="cstat">
+        <div class="cstat-num">2</div>
+        <div class="cstat-label">Business Units Secured</div>
+      </div>
+      <div class="cstat">
+        <div class="cstat-num">4</div>
+        <div class="cstat-label">Major Compliance Frameworks</div>
+      </div>
+      <div class="cstat">
+        <div class="cstat-num">AI+</div>
+        <div class="cstat-label">LLM Risk Programme Built</div>
+      </div>
+      <div class="cstat">
+        <div class="cstat-num">Real-time</div>
+        <div class="cstat-label">KRI Visibility Established</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BODY -->
+  <div class="page-body">
+
+    <!-- Sticky sidebar nav -->
+    <nav class="sidebar-nav" id="sidebar-nav">
+      <div class="sidenav-label">Contents</div>
+      <a class="sidenav-item" href="#context">01 — Context &amp; Problem</a>
+      <a class="sidenav-item" href="#research">02 — Research Phase</a>
+      <a class="sidenav-item" href="#strategy">03 — Strategic Thinking</a>
+      <a class="sidenav-item" href="#challenges">04 — Challenges &amp; Solutions</a>
+      <a class="sidenav-item" href="#execution">05 — Execution</a>
+      <a class="sidenav-item" href="#impact">06 — Measurable Impact</a>
+      <a class="sidenav-item" href="#frameworks">07 — Frameworks &amp; Tools</a>
+      <a class="sidenav-item" href="#reflection">08 — Reflection</a>
+    </nav>
+
+    <!-- Main content -->
+    <main class="content-col">
+
+      <!-- ── 01 CONTEXT ── -->
+      <section class="chapter" id="context">
+        <div class="chapter-num reveal">01</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">
+          THE PROBLEM<br><em>Setting the stage</em>
+        </h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>Evernorth Health Services, the health services segment of the Cigna Group, operates at the intersection of healthcare, pharmacy, and enterprise benefits — one of the most regulated and risk-sensitive environments in corporate America. When I stepped into the BISO role, I was embedded directly into the HR and Legal IT business units: two divisions that sit at the apex of employee data privacy, legal privilege, and workforce compliance data.</p>
+          <p>The mandate was clear but the problem was layered. Security at this scale is not a technology problem — it is a <strong>trust and governance problem</strong>. Engineering teams were building faster than security posture could track. AI and LLM capabilities were being adopted across business functions without established risk frameworks. Regulatory exposure under HIPAA, PCI-DSS, and state-level data privacy laws was real and growing.</p>
+          <p>The fundamental question was: <strong>how do you operationalise meaningful security risk reduction across business units that have complex, competing priorities — without becoming the team that slows everything down?</strong></p>
+        </div>
+
+        <div class="pullquote reveal">
+          <p>Security at enterprise scale is not a technology problem. It is a trust and governance problem — won or lost in the relationships between security advisors and the business units they serve.</p>
+          <cite>Approach principle — BISO engagement model</cite>
+        </div>
+
+        <div class="two-col reveal">
+          <div class="callout" data-label="Business Context">
+            <div class="callout-title">HR &amp; Legal IT — Unique Risk Profile</div>
+            <p>These teams handle the most sensitive non-clinical data Cigna produces: workforce PII, legal correspondence, employment records, and attorney-client privileged communications. A breach here carries regulatory, reputational, and legal consequence simultaneously.</p>
+          </div>
+          <div class="callout" data-label="Security Context">
+            <div class="callout-title">The AI Inflection Point</div>
+            <p>In 2025, AI adoption across enterprise functions accelerated sharply. LLMs were being integrated into HR workflows, legal document drafting, and compliance monitoring — often faster than security governance could formally assess each use case.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 02 RESEARCH ── -->
+      <section class="chapter" id="research">
+        <div class="chapter-num reveal">02</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">
+          RESEARCH PHASE<br><em>Understanding before acting</em>
+        </h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>The first weeks in a BISO role are diagnostic. Before proposing solutions, I needed to understand the actual security posture — not the documented posture, but the lived, operational reality of each business unit. This required a structured discovery process across four dimensions.</p>
+        </div>
+
+        <div class="labeled-rule reveal"><span class="lr-text">Discovery Dimensions</span></div>
+
+        <div class="timeline reveal">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">WEEK 1–2</div>
+            <div class="tl-content">
+              <div class="tl-title">Stakeholder Mapping &amp; Trust Building</div>
+              <p class="tl-desc">Conducted structured interviews with HR IT leads, Legal IT directors, and application owners to understand their workflows, pain points, and existing risk perception. The goal was not to audit — it was to listen. Security teams that lead with audits lose the room immediately.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">WEEK 2–4</div>
+            <div class="tl-content">
+              <div class="tl-title">Application Security Landscape Assessment</div>
+              <p class="tl-desc">Reviewed application portfolios across both business units — cataloguing data flows, third-party integrations, API surface areas, and CI/CD pipeline maturity. Cross-referenced findings against Cigna security policies and industry baselines (OWASP ASVS Level 2, NIST CSF).</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">WEEK 3–5</div>
+            <div class="tl-content">
+              <div class="tl-title">AI/LLM Usage Inventory</div>
+              <p class="tl-desc">Worked with business unit leads to surface all AI tool usage — both sanctioned and shadow. This included LLM-based document drafting tools, HR co-pilots, and embedded analytics. Assessed each against NIST AI RMF principles: govern, map, measure, and manage.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">WEEK 4–6</div>
+            <div class="tl-content">
+              <div class="tl-title">KRI Baseline &amp; Compliance Gap Analysis</div>
+              <p class="tl-desc">Established a baseline for key risk indicators — open vulnerabilities by severity, patching SLA adherence, training completion rates, and audit finding recurrence. Mapped current posture against PCI-DSS, HIPAA, and Cigna's internal security standards to surface gaps requiring immediate prioritisation.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-block reveal">
+          <p>The research phase confirmed a consistent pattern: security risks were not hidden — they were visible to the right people, but not communicated upward in a language that business leaders could act on. The measurement problem was as significant as the risk problem itself.</p>
+          <div class="attr">Key insight — discovery phase</div>
+        </div>
+      </section>
+
+      <!-- ── 03 STRATEGY ── -->
+      <section class="chapter" id="strategy">
+        <div class="chapter-num reveal">03</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">
+          STRATEGIC THINKING<br><em>How I shaped the approach</em>
+        </h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>The BISO model is fundamentally different from a traditional security architect role. Rather than designing technical controls, the BISO operates as a <strong>risk translator</strong> — converting technical security realities into business risk language that stakeholders can understand, prioritise, and act on.</p>
+          <p>My strategic approach rested on three principles that I brought from prior experience at Goldman Sachs and Oracle, adapted to Cigna's unique healthcare and regulatory context.</p>
+        </div>
+
+        <div class="labeled-rule reveal"><span class="lr-text">Three Strategic Principles</span></div>
+
+        <div class="metrics-grid reveal">
+          <div class="metric-card">
+            <div class="metric-num">01</div>
+            <div class="metric-label">Business-First Risk Language</div>
+            <p class="metric-desc">Every risk finding was framed in terms of business impact — regulatory exposure, reputational risk, operational disruption — not just CVE severity scores or technical debt.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">02</div>
+            <div class="metric-label">Security as an Enabler</div>
+            <p class="metric-desc">Positioned security review as a service that accelerates safe adoption of new capabilities (especially AI), rather than a gate that blocks progress. This required changing the conversation from "you can't do this" to "here's how we do this safely."</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">03</div>
+            <div class="metric-label">Visibility Creates Accountability</div>
+            <p class="metric-desc">Real-time KRI dashboards ensure that risk posture is not a quarterly audit exercise — it is a live operational metric that business leaders check alongside their other KPIs.</p>
+          </div>
+        </div>
+
+        <div class="prose reveal">
+          <p>For the AI/LLM risk dimension specifically, I drew on my prior work implementing LLM guardrails at Goldman Sachs to develop a governance framework tailored to healthcare's unique requirements. Healthcare data processed through AI systems carries HIPAA implications that financial services AI governance does not — the approach had to be adapted, not simply copied.</p>
+          <p>I aligned the AI risk framework to <strong>NIST AI RMF's four functions</strong>: Govern (establishing policies and accountability), Map (identifying AI use cases and their risk context), Measure (evaluating risk indicators), and Manage (implementing controls and monitoring). This provided a structured, auditable approach that satisfied both security and compliance stakeholders.</p>
+        </div>
+
+        <div class="callout" data-label="Framework Alignment" style="margin-top:2rem;">
+          <div class="callout-title">Regulatory Compliance Architecture</div>
+          <p>The security programme was designed to satisfy overlapping regulatory requirements simultaneously — reducing compliance overhead through shared control architectures that address PCI-DSS, HIPAA, and NIST requirements with single implementations wherever possible.</p>
+        </div>
+
+        <div class="badge-row reveal">
+          <span class="badge">NIST AI RMF</span>
+          <span class="badge">HIPAA Security Rule</span>
+          <span class="badge">PCI-DSS v4.0</span>
+          <span class="badge">OWASP ASVS</span>
+          <span class="badge">NIST CSF 2.0</span>
+          <span class="badge">Cigna Security Standards</span>
+          <span class="badge">NIST 800-53</span>
+        </div>
+      </section>
+
+      <!-- ── 04 CHALLENGES ── -->
+      <section class="chapter" id="challenges">
+        <div class="chapter-num reveal">04</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">
+          CHALLENGES &amp;<br><em>Solutions paired</em>
+        </h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>No strategic security programme unfolds without friction. The challenges encountered at Cigna were not unique to one organisation — they reflect the structural tensions inherent to enterprise security governance in large regulated businesses. What matters is how they were addressed.</p>
+        </div>
+
+        <!-- C/S pair 1 -->
+        <div class="cs-grid reveal">
+          <div class="cs-cell">
+            <div class="cs-cell-label"><span class="icon">⚡</span> Challenge 01</div>
+            <div class="cs-cell-title">AI Tool Shadow Adoption</div>
+            <p>Business units were adopting AI-powered productivity tools — document drafting, data analysis co-pilots, HR query assistants — outside of formal IT procurement. These tools were processing sensitive employee and legal data without security review or data residency validation.</p>
+          </div>
+          <div class="cs-cell solution">
+            <div class="cs-cell-label"><span class="icon">✓</span> Solution Applied</div>
+            <div class="cs-cell-title">AI Inventory + Risk-Tiered Approval Fast Track</div>
+            <p>Conducted a structured AI usage inventory across both business units. Developed a risk-tiered approval framework that categorised AI tools by data sensitivity and processing scope — allowing low-risk tools to receive expedited approval, while higher-risk integrations underwent full security review. This eliminated "shadow AI" without creating friction that would drive further shadow usage.</p>
+          </div>
+        </div>
+
+        <!-- C/S pair 2 -->
+        <div class="cs-grid reveal">
+          <div class="cs-cell">
+            <div class="cs-cell-label"><span class="icon">⚡</span> Challenge 02</div>
+            <div class="cs-cell-title">Risk Communication Gap</div>
+            <p>Security findings were being captured in technical vulnerability reports that business stakeholders could not meaningfully act on. The result was a disconnect: security teams knew what the risks were; business leaders could not prioritise them against operational demands.</p>
+          </div>
+          <div class="cs-cell solution">
+            <div class="cs-cell-label"><span class="icon">✓</span> Solution Applied</div>
+            <div class="cs-cell-title">KRI Dashboard with Business-Linked Risk Narratives</div>
+            <p>Redesigned risk reporting to pair KRI metrics with business-impact narratives. Instead of "14 high-severity CVEs open," the dashboard showed "3 risks with regulatory exposure under HIPAA §164.306 — estimated remediation window: 18 days." Stakeholders could immediately understand the priority and business consequence without needing technical security expertise.</p>
+          </div>
+        </div>
+
+        <!-- C/S pair 3 -->
+        <div class="cs-grid reveal">
+          <div class="cs-cell">
+            <div class="cs-cell-label"><span class="icon">⚡</span> Challenge 03</div>
+            <div class="cs-cell-title">Secure SDLC Inconsistency</div>
+            <p>Development teams within HR IT and Legal IT were operating at different levels of SDLC maturity. Some had adopted basic CI/CD scanning; others had minimal security testing integration. This inconsistency created uneven risk exposure across the application portfolio.</p>
+          </div>
+          <div class="cs-cell solution">
+            <div class="cs-cell-label"><span class="icon">✓</span> Solution Applied</div>
+            <div class="cs-cell-title">Secure SDLC Modernisation Programme</div>
+            <p>Designed and launched a phased Secure SDLC modernisation programme — establishing baseline security requirements for all teams, implementing security checkpoints at design, build, and release stages, and embedding AppSec champions within development squads. The programme was tailored to each team's existing maturity to avoid imposing controls that were impractical given their current tooling and processes.</p>
+          </div>
+        </div>
+
+        <!-- C/S pair 4 -->
+        <div class="cs-grid reveal">
+          <div class="cs-cell">
+            <div class="cs-cell-label"><span class="icon">⚡</span> Challenge 04</div>
+            <div class="cs-cell-title">LLM-Specific Risk in Legal Context</div>
+            <p>Legal IT teams were the highest-risk environment for LLM adoption: attorney-client privilege, discovery obligations, and data confidentiality requirements created a uniquely complex risk profile. Standard AI governance frameworks did not adequately address legal-domain-specific requirements.</p>
+          </div>
+          <div class="cs-cell solution">
+            <div class="cs-cell-label"><span class="icon">✓</span> Solution Applied</div>
+            <div class="cs-cell-title">Legal-Domain AI Risk Framework</div>
+            <p>Collaborated with Legal IT leadership and the Legal department to develop a bespoke AI risk framework for legal workflows — covering data residency, output privilege classification, audit trail requirements, and hallucination risk in legal document contexts. This framework was aligned to NIST AI RMF Govern and Measure functions and reviewed against Cigna's legal and compliance standards.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 05 EXECUTION ── -->
+      <section class="chapter" id="execution">
+        <div class="chapter-num reveal">05</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">
+          EXECUTION<br><em>What was built and delivered</em>
+        </h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>Strategic clarity is only as valuable as the execution that follows it. Across the first months in role, several concrete programmes were initiated or accelerated. Each was designed to deliver measurable risk reduction while building the capabilities that would sustain improvement beyond any individual intervention.</p>
+        </div>
+
+        <div class="labeled-rule reveal"><span class="lr-text">Delivery Workstreams</span></div>
+
+        <div class="timeline reveal">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">STREAM 01</div>
+            <div class="tl-content">
+              <div class="tl-title">KRI Dashboard Design &amp; Deployment</div>
+              <p class="tl-desc">Designed real-time KRI dashboards for application security posture across HR IT and Legal IT. Metrics included vulnerability ageing by severity, SDLC gate compliance rates, security training completion, and AI tool risk classification status. Dashboards were made accessible to both security teams and non-technical business leaders — with separate views calibrated to each audience's decision-making needs.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">STREAM 02</div>
+            <div class="tl-content">
+              <div class="tl-title">Secure SDLC Programme Modernisation</div>
+              <p class="tl-desc">Led the modernisation of Secure SDLC practices across development teams — introducing security requirements at sprint planning, design review gates for high-risk features, and automated scanning integrated into existing CI/CD tooling. AppSec champion roles were established within development squads to create an internal security capability that persists beyond direct advisory involvement.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">STREAM 03</div>
+            <div class="tl-content">
+              <div class="tl-title">AI/LLM Risk Governance Programme</div>
+              <p class="tl-desc">Built and deployed an AI risk governance programme encompassing: a risk-tiered approval workflow for new AI tools, an ongoing AI inventory and classification process, technical guardrails aligned to NIST AI RMF, and monitoring procedures for AI systems handling sensitive data. Collaborated with Cigna's enterprise AI governance team to ensure alignment with the organisation-wide AI strategy.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">STREAM 04</div>
+            <div class="tl-content">
+              <div class="tl-title">Stakeholder Risk Engagement Cadence</div>
+              <p class="tl-desc">Established regular security risk reviews with HR IT and Legal IT leadership — monthly KRI reviews, quarterly strategic risk assessments, and ad-hoc security consultations for new product initiatives or technology adoptions. This cadence converted security from a reactive audit function into a proactive business partner relationship.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">STREAM 05</div>
+            <div class="tl-content">
+              <div class="tl-title">Regulatory Compliance Alignment</div>
+              <p class="tl-desc">Coordinated compliance posture reviews against PCI-DSS v4.0, HIPAA Security Rule, and NIST AI RMF across both business units. Identified gaps between current controls and required standards, prioritised remediation by risk exposure, and tracked remediation progress through the KRI dashboard system.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 06 IMPACT ── -->
+      <section class="chapter" id="impact">
+        <div class="chapter-num reveal">06</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">
+          MEASURABLE<br><em>Impact delivered</em>
+        </h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>Security programmes are ultimately accountable to outcomes — not effort. The following represent the concrete, measurable improvements in risk posture achieved through the BISO engagement at Evernorth. Where specific numbers are not cited, the nature of the impact is described in terms observable to the organisation's leadership.</p>
+        </div>
+
+        <div class="metrics-grid reveal" style="transition-delay:.08s">
+          <div class="metric-card">
+            <div class="metric-num">Real-time</div>
+            <div class="metric-label">KRI Visibility</div>
+            <p class="metric-desc">Business unit leaders moved from quarterly audit reports to continuous, live security posture visibility — enabling faster risk-based decision making across HR IT and Legal IT.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">100%</div>
+            <div class="metric-label">AI Tool Inventory Coverage</div>
+            <p class="metric-desc">All AI tools in use across both business units identified, classified by risk tier, and either approved with controls or flagged for remediation — eliminating unassessed shadow AI exposure.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">4</div>
+            <div class="metric-label">Frameworks Aligned</div>
+            <p class="metric-desc">Security programme simultaneously satisfies PCI-DSS v4.0, HIPAA Security Rule, NIST AI RMF, and Cigna internal security standards through shared control architecture — reducing compliance overhead for business units.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">↓</div>
+            <div class="metric-label">Risk Finding Age</div>
+            <p class="metric-desc">Reduction in mean time to acknowledge and begin remediation for security findings — driven by improved stakeholder engagement cadence and business-language risk reporting that enables faster prioritisation decisions.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">Security-first</div>
+            <div class="metric-label">Culture Shift</div>
+            <p class="metric-desc">Development teams moved from treating security review as a compliance burden to treating it as a design input — evidenced by proactive consultation requests from engineering leads before project initiation, not after.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">Ongoing</div>
+            <div class="metric-label">SDLC Maturity Uplift</div>
+            <p class="metric-desc">Secure SDLC programme operational across both business units with AppSec champions embedded in development squads — building internal capability that continues beyond direct advisory engagement.</p>
+          </div>
+        </div>
+
+        <div class="pullquote reveal">
+          <p>The most durable security improvement is not the vulnerability you close — it is the engineering culture that stops opening them in the first place. That culture change is what this role is designed to create.</p>
+          <cite>Raja Kumar Sharma — BISO philosophy</cite>
+        </div>
+      </section>
+
+      <!-- ── 07 FRAMEWORKS ── -->
+      <section class="chapter" id="frameworks">
+        <div class="chapter-num reveal">07</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">
+          FRAMEWORKS<br><em>&amp; Tools applied</em>
+        </h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>The technical and governance frameworks deployed in this engagement were selected for their fit to the specific risk context of a large regulated healthcare organisation — not applied generically. Each framework was adapted to Cigna's operating environment, existing security standards, and the maturity level of the teams involved.</p>
+        </div>
+
+        <div class="two-col reveal">
+          <div>
+            <div class="section-label" style="margin-bottom:1rem;">Security Governance</div>
+            <ul class="styled-list">
+              <li><strong>NIST CSF 2.0</strong> — Organisational security programme structure and maturity benchmarking</li>
+              <li><strong>NIST 800-53</strong> — Control selection and implementation guidance for HR/Legal IT systems</li>
+              <li><strong>OWASP ASVS Level 2</strong> — Application security verification baseline for in-scope applications</li>
+              <li><strong>Cigna Security Standards</strong> — Internal policy alignment and control inheritance</li>
+            </ul>
+          </div>
+          <div>
+            <div class="section-label" style="margin-bottom:1rem;">Regulatory Compliance</div>
+            <ul class="styled-list">
+              <li><strong>HIPAA Security Rule</strong> — Administrative, physical, and technical safeguards for ePHI-adjacent systems</li>
+              <li><strong>PCI-DSS v4.0</strong> — Payment data protection controls for applicable application scope</li>
+              <li><strong>State Privacy Laws</strong> — CCPA and applicable state-level data privacy requirements</li>
+              <li><strong>NIST AI RMF</strong> — Govern, Map, Measure, Manage functions for AI/LLM risk</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="labeled-rule reveal"><span class="lr-text">AI Security Methodology</span></div>
+
+        <div class="prose reveal">
+          <p>For AI and LLM risk specifically, I developed a four-stage evaluation methodology drawing on NIST AI RMF and my prior experience implementing LLM guardrails at Goldman Sachs:</p>
+        </div>
+
+        <div class="metrics-grid reveal" style="grid-template-columns: repeat(4,1fr); margin-top:1.5rem;">
+          <div class="metric-card">
+            <div class="metric-num" style="font-size:2rem;">G</div>
+            <div class="metric-label">Govern</div>
+            <p class="metric-desc">Establish policies, roles, and accountability structures for AI use across business units.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num" style="font-size:2rem;">M</div>
+            <div class="metric-label">Map</div>
+            <p class="metric-desc">Inventory AI tools, classify by data sensitivity, and identify risk context for each use case.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num" style="font-size:2rem;">M</div>
+            <div class="metric-label">Measure</div>
+            <p class="metric-desc">Define and track risk indicators — data exposure, output reliability, audit trail completeness.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num" style="font-size:2rem;">M</div>
+            <div class="metric-label">Manage</div>
+            <p class="metric-desc">Implement controls, monitor continuously, and update the risk profile as AI capabilities evolve.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 08 REFLECTION ── -->
+      <section class="chapter" id="reflection">
+        <div class="chapter-num reveal">08</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">
+          REFLECTION<br><em>What this role demands</em>
+        </h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>The BISO role is one of the most demanding positions in enterprise security — not because of its technical complexity, but because of its relational complexity. Success is not measured in firewall rules or CVE counts. It is measured in the quality of conversations you enable between security and the business, and in the security decisions that business leaders make well because they were better informed.</p>
+          <p>Three lessons stand out from this engagement so far.</p>
+        </div>
+
+        <div class="cs-grid reveal" style="grid-template-columns:1fr; gap:1px; margin-top:1.5rem;">
+          <div class="cs-cell" style="border-bottom:1px solid var(--rule);">
+            <div class="cs-cell-label">Lesson 01</div>
+            <div class="cs-cell-title">Speed of Trust is the Security Control</div>
+            <p>The faster a business unit leader trusts the security advisor's judgment, the faster risk findings move to remediation. Trust-building is not soft work — it is the highest-leverage security investment in a BISO role. Every interaction is either building or eroding that trust.</p>
+          </div>
+          <div class="cs-cell" style="background:var(--bg-warm); border-bottom:1px solid var(--rule);">
+            <div class="cs-cell-label">Lesson 02</div>
+            <div class="cs-cell-title">AI Risk is a Moving Target — Governance Must Move Too</div>
+            <p>AI capabilities deployed in 2025 will have different risk profiles in 2026. Static governance frameworks become liabilities. The AI risk programme must be designed to update continuously — with clear triggers for re-evaluation when new capabilities are adopted or when the threat landscape changes.</p>
+          </div>
+          <div class="cs-cell">
+            <div class="cs-cell-label">Lesson 03</div>
+            <div class="cs-cell-title">Measurement is the Missing Ingredient in Most Security Programmes</div>
+            <p>Most organisations know they have security risk. Few have the visibility to prioritise it effectively. The KRI dashboard work at Cigna confirmed a pattern I first observed at Goldman Sachs: when business leaders can see risk in real time, they make better security decisions — without needing to be security experts themselves. Measurement creates accountability that no policy can.</p>
+          </div>
+        </div>
+
+        <div class="highlight-block reveal">
+          <p>The future of enterprise security is not a more powerful scanning tool or a more comprehensive policy document. It is a security function so embedded in the business that engineering leaders ask "how do we do this securely?" before they ask "can we do this at all?"</p>
+          <div class="attr">Raja Kumar Sharma — on the evolution of enterprise security leadership</div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="case-footer">
+    <div class="cf-left">
+      <div class="cf-headline">
+        VIEW MORE WORK
+        <span>Explore the full portfolio</span>
+      </div>
+      <div class="cf-links">
+        <a href="index.html" class="cf-btn cf-btn-light">← Back to Portfolio</a>
+        <a href="mailto:sharma06raja@gmail.com" class="cf-btn cf-btn-red">Get in Touch</a>
+      </div>
+    </div>
+    <div class="cf-right">
+      <div class="cf-contact-row">
+        <span class="cf-contact-label">Email</span>
+        <a href="mailto:sharma06raja@gmail.com" class="cf-contact-val">sharma06raja@gmail.com</a>
+      </div>
+      <div class="cf-contact-row">
+        <span class="cf-contact-label">Phone</span>
+        <a href="tel:+917093902855" class="cf-contact-val">+91 70939 02855</a>
+      </div>
+      <div class="cf-contact-row">
+        <span class="cf-contact-label">LinkedIn</span>
+        <a href="https://linkedin.com/in/rrkshar13" target="_blank" rel="noopener" class="cf-contact-val">linkedin.com/in/rrkshar13</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Reading progress bar
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const pct = Math.min((scrollTop / docHeight) * 100, 100);
+    bar.style.width = pct + '%';
+  }, { passive: true });
+
+  // Topbar shadow
+  const topbar = document.getElementById('topbar');
+  window.addEventListener('scroll', () => {
+    topbar.style.boxShadow = window.scrollY > 40
+      ? '0 2px 20px rgba(17,17,24,.09)'
+      : 'none';
+  }, { passive: true });
+
+  // Active sidebar item on scroll
+  const sections = document.querySelectorAll('.chapter');
+  const navItems = document.querySelectorAll('.sidenav-item');
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navItems.forEach(item => item.classList.remove('active'));
+        const id = e.target.getAttribute('id');
+        const active = document.querySelector(`.sidenav-item[href="#${id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(s => sectionObserver.observe(s));
+</script>
+</body>
+</html>
