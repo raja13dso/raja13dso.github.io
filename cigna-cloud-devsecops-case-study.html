@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study — Cloud Security & DevSecOps | Raja Kumar Sharma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Epilogue:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:        #f7f4ef;
+      --bg-warm:   #efeae0;
+      --bg-dark:   #e8e2d6;
+      --ink:       #111118;
+      --ink-mid:   #3a3a4a;
+      --ink-soft:  #6b6b7e;
+      --navy:      #1a1a3e;
+      --teal:      #0e6b6b;
+      --teal-lt:   #149090;
+      --red:       #c0392b;
+      --red-lt:    #e74c3c;
+      --rule:      rgba(17,17,24,.12);
+      --rule-teal: rgba(14,107,107,.2);
+
+      --display: 'Bebas Neue', sans-serif;
+      --serif:   'Playfair Display', Georgia, serif;
+      --body:    'Epilogue', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--body);
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(17,17,24,.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .site-wrap { position: relative; z-index: 1; }
+
+    /* ─── PROGRESS BAR ───────────────────────────────── */
+    #progress-bar {
+      position: fixed;
+      top: 3.8rem; left: 0;
+      height: 2px;
+      background: var(--teal);
+      z-index: 300;
+      width: 0%;
+      transition: width .1s linear;
+    }
+
+    /* ─── TOP BAR ────────────────────────────────────── */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      background: var(--bg);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .9rem 3rem;
+      transition: box-shadow .3s;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .topbar-brand {
+      font-family: var(--display);
+      font-size: 1.2rem;
+      letter-spacing: .18em;
+      color: var(--navy);
+    }
+
+    .topbar-sep {
+      width: 1px; height: 1.2rem;
+      background: var(--rule);
+    }
+
+    .topbar-crumb {
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .topbar-crumb span { color: var(--teal); }
+
+    .back-link {
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      transition: color .2s;
+    }
+
+    .back-link::before { content: '←'; font-size: .8rem; }
+    .back-link:hover { color: var(--navy); }
+
+    /* ─── COVER ──────────────────────────────────────── */
+    #cover {
+      min-height: 100svh;
+      padding-top: 3.8rem;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      border-bottom: 2px solid var(--ink);
+      position: relative;
+      overflow: hidden;
+      background: #0b1f2e;
+    }
+
+    /* Hex / cloud-node pattern */
+    #cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(14,107,107,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,107,107,.06) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
+      pointer-events: none;
+    }
+
+    /* Radial glow */
+    #cover::after {
+      content: '';
+      position: absolute;
+      top: 20%; left: 60%;
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse, rgba(14,107,107,.18) 0%, transparent 70%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+
+    .cover-inner {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 4rem;
+      padding: 5rem 3rem 3rem;
+      align-items: end;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cover-tag {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--teal-lt);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+    }
+
+    .cover-tag::before {
+      content: '';
+      display: block;
+      width: 2rem; height: 2px;
+      background: var(--teal-lt);
+    }
+
+    .cover-title {
+      font-family: var(--display);
+      font-size: clamp(3.5rem, 8vw, 8.5rem);
+      letter-spacing: .03em;
+      color: #fff;
+      line-height: .88;
+    }
+
+    .cover-title em {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: .55em;
+      color: rgba(255,255,255,.45);
+      display: block;
+      letter-spacing: -.01em;
+      line-height: 1.35;
+      margin-top: .4rem;
+    }
+
+    /* CSP logo-strip */
+    .csp-strip {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .csp-pill {
+      font-family: var(--display);
+      font-size: .9rem;
+      letter-spacing: .16em;
+      padding: .4rem 1rem;
+      border: 1px solid rgba(14,107,107,.5);
+      color: var(--teal-lt);
+      background: rgba(14,107,107,.1);
+    }
+
+    .cover-right {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      justify-content: flex-end;
+      padding-bottom: .5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cover-meta-block {
+      border-left: 2px solid rgba(14,107,107,.35);
+      padding-left: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .cover-meta-label {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+      margin-bottom: .2rem;
+    }
+
+    .cover-meta-val {
+      font-size: .88rem;
+      font-weight: 500;
+      color: rgba(255,255,255,.78);
+      line-height: 1.4;
+    }
+
+    /* Cover stats */
+    .cover-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid rgba(255,255,255,.06);
+      position: relative;
+      z-index: 2;
+    }
+
+    .cstat {
+      padding: 2rem 3rem;
+      border-right: 1px solid rgba(255,255,255,.06);
+    }
+
+    .cstat:last-child { border-right: none; }
+
+    .cstat-num {
+      font-family: var(--display);
+      font-size: 2.8rem;
+      letter-spacing: .04em;
+      color: var(--teal-lt);
+      line-height: 1;
+      margin-bottom: .3rem;
+    }
+
+    .cstat-label {
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+    }
+
+    /* ─── BODY LAYOUT ────────────────────────────────── */
+    .page-body {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+    }
+
+    .sidebar-nav {
+      border-right: 1px solid var(--rule);
+      padding: 4rem 2rem 4rem 3rem;
+      position: sticky;
+      top: 3.8rem;
+      height: calc(100vh - 3.8rem);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      align-self: start;
+    }
+
+    .sidenav-label {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 1rem;
+      padding-bottom: .8rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .sidenav-item {
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      color: var(--ink-soft);
+      padding: .4rem .6rem;
+      border-left: 2px solid transparent;
+      transition: all .2s;
+      line-height: 1.4;
+      display: block;
+    }
+
+    .sidenav-item:hover,
+    .sidenav-item.active {
+      color: var(--navy);
+      border-left-color: var(--teal);
+      padding-left: .9rem;
+      background: rgba(14,107,107,.05);
+    }
+
+    /* ─── CONTENT COLUMN ─────────────────────────────── */
+    .content-col {
+      padding: 5rem 5rem 8rem;
+      max-width: 900px;
+    }
+
+    /* ─── CHAPTER ────────────────────────────────────── */
+    .chapter {
+      margin-bottom: 5rem;
+      scroll-margin-top: 5rem;
+    }
+
+    .chapter-num {
+      font-family: var(--display);
+      font-size: .85rem;
+      letter-spacing: .2em;
+      color: var(--teal);
+      margin-bottom: .6rem;
+    }
+
+    .chapter-title {
+      font-family: var(--display);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      letter-spacing: .04em;
+      color: var(--navy);
+      line-height: .9;
+      margin-bottom: 2.5rem;
+    }
+
+    .chapter-title em {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: .65em;
+      letter-spacing: -.01em;
+      color: var(--teal);
+      display: block;
+      line-height: 1.3;
+    }
+
+    .chapter-rule {
+      width: 100%;
+      height: 1px;
+      background: var(--rule);
+      margin-bottom: 2.5rem;
+    }
+
+    /* ─── PROSE ──────────────────────────────────────── */
+    .prose {
+      font-size: 1.05rem;
+      color: var(--ink-mid);
+      line-height: 1.9;
+    }
+
+    .prose p + p { margin-top: 1.4rem; }
+    .prose strong { font-weight: 600; color: var(--ink); }
+
+    /* ─── PULL QUOTE ─────────────────────────────────── */
+    .pullquote {
+      margin: 3rem 0;
+      border-left: 4px solid var(--teal);
+      padding: 1.5rem 2rem;
+      background: var(--bg-warm);
+    }
+
+    .pullquote p {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--navy);
+      line-height: 1.6;
+    }
+
+    .pullquote cite {
+      display: block;
+      margin-top: .8rem;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      font-style: normal;
+    }
+
+    /* ─── CALLOUT ────────────────────────────────────── */
+    .callout {
+      margin: 2.5rem 0;
+      border: 1.5px solid var(--rule);
+      padding: 2rem 2.5rem;
+      position: relative;
+    }
+
+    .callout::before {
+      content: attr(data-label);
+      position: absolute;
+      top: 0; left: 2rem;
+      transform: translateY(-50%);
+      background: var(--bg);
+      padding: 0 .6rem;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .callout-title {
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: .8rem;
+    }
+
+    .callout p {
+      font-size: .92rem;
+      color: var(--ink-mid);
+      line-height: 1.75;
+    }
+
+    /* ─── TWO COL ────────────────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      margin: 2rem 0;
+    }
+
+    /* ─── CHALLENGE / SOLUTION GRID ──────────────────── */
+    .cs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--rule);
+      margin: 2.5rem 0;
+      border: 1px solid var(--rule);
+    }
+
+    .cs-cell {
+      background: var(--bg);
+      padding: 2rem 2.5rem;
+    }
+
+    .cs-cell.solution { background: var(--bg-warm); }
+
+    .cs-cell-label {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: .8rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .cs-cell-label .icon { font-size: .9rem; }
+
+    .cs-cell-title {
+      font-family: var(--serif);
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: .7rem;
+      line-height: 1.3;
+    }
+
+    .cs-cell p {
+      font-size: .9rem;
+      color: var(--ink-mid);
+      line-height: 1.75;
+    }
+
+    /* ─── TIMELINE ───────────────────────────────────── */
+    .timeline {
+      margin: 2.5rem 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 9rem 1fr;
+      border-left: 2px solid var(--rule);
+      margin-left: 1rem;
+      position: relative;
+      padding-bottom: 2rem;
+    }
+
+    .tl-item:last-child { padding-bottom: 0; border-left-color: transparent; }
+
+    .tl-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--teal);
+      position: absolute;
+      left: -6px; top: .3rem;
+    }
+
+    .tl-time {
+      font-family: var(--display);
+      font-size: .82rem;
+      letter-spacing: .08em;
+      color: var(--teal);
+      padding: .25rem 1rem 0 1.5rem;
+    }
+
+    .tl-content { padding: 0 0 0 1rem; }
+
+    .tl-title {
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: .35rem;
+    }
+
+    .tl-desc {
+      font-size: .87rem;
+      color: var(--ink-mid);
+      line-height: 1.7;
+    }
+
+    /* ─── METRICS GRID ───────────────────────────────── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin: 2.5rem 0;
+    }
+
+    .metric-card {
+      background: var(--bg);
+      padding: 2rem 1.8rem;
+      transition: background .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--teal);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .35s cubic-bezier(.16,1,.3,1);
+    }
+
+    .metric-card:hover { background: rgba(14,107,107,.04); }
+    .metric-card:hover::before { transform: scaleX(1); }
+
+    .metric-num {
+      font-family: var(--display);
+      font-size: 3.2rem;
+      letter-spacing: .03em;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: .4rem;
+      transition: color .25s;
+    }
+
+    .metric-card:hover .metric-num { color: var(--teal); }
+
+    .metric-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: .6rem;
+    }
+
+    .metric-desc {
+      font-size: .82rem;
+      color: var(--ink-mid);
+      line-height: 1.65;
+    }
+
+    /* ─── STYLED LIST ────────────────────────────────── */
+    .styled-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+      margin: 1.5rem 0;
+    }
+
+    .styled-list li {
+      font-size: .95rem;
+      color: var(--ink-mid);
+      line-height: 1.75;
+      padding-left: 1.6rem;
+      position: relative;
+    }
+
+    .styled-list li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: .75em;
+      width: .7rem; height: 1.5px;
+      background: var(--teal);
+    }
+
+    /* ─── BADGE ROW ──────────────────────────────────── */
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin: 1.5rem 0;
+    }
+
+    .badge {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .45rem 1rem;
+      border: 1.5px solid var(--rule);
+      color: var(--ink-mid);
+      transition: all .2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--teal);
+      transform: scaleY(0);
+      transition: transform .2s;
+    }
+
+    .badge:hover { border-color: var(--teal); color: var(--teal); }
+    .badge:hover::before { transform: scaleY(1); }
+
+    /* ─── HIGHLIGHT BLOCK ────────────────────────────── */
+    .highlight-block {
+      background: #0b1f2e;
+      color: #fff;
+      padding: 3rem;
+      margin: 3rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .highlight-block::after {
+      content: '☁';
+      position: absolute;
+      right: 1.5rem; bottom: -1.5rem;
+      font-size: 12rem;
+      color: rgba(14,107,107,.08);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .highlight-block p {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.35rem;
+      line-height: 1.65;
+      color: rgba(255,255,255,.9);
+      position: relative;
+      z-index: 1;
+    }
+
+    .highlight-block .attr {
+      margin-top: 1.2rem;
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+      font-style: normal;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── LABELED RULE ───────────────────────────────── */
+    .labeled-rule {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 4rem 0 3rem;
+    }
+
+    .labeled-rule .lr-text {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      white-space: nowrap;
+    }
+
+    .labeled-rule::after {
+      content: '';
+      display: block;
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    /* ─── ARCHITECTURE DIAGRAM (CSS) ─────────────────── */
+    .arch-diagram {
+      margin: 2.5rem 0;
+      border: 1px solid var(--rule);
+      background: var(--bg-warm);
+      padding: 2.5rem;
+    }
+
+    .arch-title {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 2rem;
+    }
+
+    .arch-layers {
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+    }
+
+    .arch-layer {
+      display: grid;
+      grid-template-columns: 9rem 1fr;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .arch-layer-label {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      text-align: right;
+      padding-right: 1rem;
+      border-right: 2px solid var(--rule);
+    }
+
+    .arch-layer-boxes {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    .arch-box {
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      padding: .35rem .8rem;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .arch-box.aws   { border-color: #ff9900; color: #b36900; background: rgba(255,153,0,.06); }
+    .arch-box.azure { border-color: #0078d4; color: #005a9e; background: rgba(0,120,212,.06); }
+    .arch-box.oci   { border-color: #c74634; color: #9e2e1e; background: rgba(199,70,52,.06); }
+    .arch-box.saas  { border-color: var(--teal); color: var(--teal); background: rgba(14,107,107,.06); }
+    .arch-box.ctrl  { border-color: var(--navy); color: var(--navy); background: rgba(26,26,62,.05); }
+
+    /* ─── SECTION LABEL ──────────────────────────────── */
+    .section-label {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+    }
+
+    .section-label::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: var(--rule-teal);
+      width: 3rem;
+    }
+
+    /* ─── REVEAL ─────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .65s cubic-bezier(.16,1,.3,1), transform .65s cubic-bezier(.16,1,.3,1);
+    }
+
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── FOOTER ─────────────────────────────────────── */
+    .case-footer {
+      background: #0b1f2e;
+      border-top: 2px solid var(--ink);
+      padding: 4rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .cf-headline {
+      font-family: var(--display);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      letter-spacing: .04em;
+      color: #fff;
+      line-height: .9;
+      margin-bottom: 1rem;
+    }
+
+    .cf-headline span {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: .62em;
+      color: rgba(255,255,255,.4);
+      display: block;
+      line-height: 1.4;
+    }
+
+    .cf-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .cf-btn {
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: .8rem 1.8rem;
+      transition: all .25s;
+      display: inline-block;
+    }
+
+    .cf-btn-light {
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.75);
+      border: 1.5px solid rgba(255,255,255,.12);
+    }
+
+    .cf-btn-light:hover { background: rgba(255,255,255,.15); color: #fff; }
+
+    .cf-btn-teal {
+      background: var(--teal);
+      color: #fff;
+      border: 1.5px solid var(--teal);
+    }
+
+    .cf-btn-teal:hover { background: var(--teal-lt); border-color: var(--teal-lt); }
+
+    .cf-right {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cf-contact-row {
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .cf-contact-label {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.28);
+    }
+
+    .cf-contact-val {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: rgba(255,255,255,.72);
+      transition: color .2s;
+    }
+
+    .cf-contact-val:hover { color: var(--teal-lt); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .cover-inner { grid-template-columns: 1fr; }
+      .cover-right { display: none; }
+      .cover-stats { grid-template-columns: repeat(2, 1fr); }
+      .page-body { grid-template-columns: 1fr; }
+      .sidebar-nav { display: none; }
+      .content-col { padding: 3rem 1.5rem 5rem; max-width: 100%; }
+      .two-col { grid-template-columns: 1fr; gap: 1.5rem; }
+      .cs-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .case-footer { grid-template-columns: 1fr; gap: 3rem; }
+      .arch-layer { grid-template-columns: 7rem 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .topbar { padding: 1rem 1.5rem; }
+      .cover-stats { grid-template-columns: 1fr 1fr; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .cstat { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div class="site-wrap">
+
+  <!-- TOP BAR -->
+  <header class="topbar" id="topbar">
+    <div class="topbar-left">
+      <a href="index.html" class="topbar-brand">RKS</a>
+      <div class="topbar-sep"></div>
+      <div class="topbar-crumb">Case Study <span>/ Cloud Security &amp; DevSecOps — Evernorth</span></div>
+    </div>
+    <a href="index.html" class="back-link">Back to Portfolio</a>
+  </header>
+
+  <!-- COVER -->
+  <section id="cover">
+    <div class="cover-inner">
+      <div>
+        <div class="cover-tag">Case Study — Cloud Security Governance &amp; DevSecOps</div>
+        <h1 class="cover-title">
+          ENTERPRISE<br>CLOUD<br>SECURITY<br>&amp; DEVSECOPS
+          <em>Evernorth · Cigna Group · Multi-Cloud · 2025–Present</em>
+        </h1>
+        <div class="csp-strip">
+          <span class="csp-pill">AWS</span>
+          <span class="csp-pill">Azure</span>
+          <span class="csp-pill">OCI</span>
+          <span class="csp-pill">SaaS/PaaS</span>
+          <span class="csp-pill">Hybrid</span>
+        </div>
+      </div>
+
+      <div class="cover-right">
+        <div class="cover-meta-block">
+          <div>
+            <div class="cover-meta-label">Organisation</div>
+            <div class="cover-meta-val">Evernorth Health Services (Cigna Group)</div>
+          </div>
+          <div>
+            <div class="cover-meta-label">Role</div>
+            <div class="cover-meta-val">Cyber Security Senior Advisor — BISO</div>
+          </div>
+          <div>
+            <div class="cover-meta-label">Cloud Scope</div>
+            <div class="cover-meta-val">AWS (primary) · Azure · Oracle OCI · Multi-vendor SaaS/PaaS</div>
+          </div>
+          <div>
+            <div class="cover-meta-label">Focus Areas</div>
+            <div class="cover-meta-val">Cloud Security Governance · DevSecOps · CSPM · IAM · Zero Trust · IaC Security</div>
+          </div>
+          <div>
+            <div class="cover-meta-label">Frameworks</div>
+            <div class="cover-meta-val">NIST CSF 2.0 · CIS Benchmarks · HIPAA · PCI-DSS · CSA CCM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-stats">
+      <div class="cstat">
+        <div class="cstat-num">3+</div>
+        <div class="cstat-label">Major CSPs Governed</div>
+      </div>
+      <div class="cstat">
+        <div class="cstat-num">Zero</div>
+        <div class="cstat-label">Trust Architecture Initiated</div>
+      </div>
+      <div class="cstat">
+        <div class="cstat-num">IaC</div>
+        <div class="cstat-label">Security Gates in CI/CD</div>
+      </div>
+      <div class="cstat">
+        <div class="cstat-num">Live</div>
+        <div class="cstat-label">Cloud Posture Visibility</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BODY -->
+  <div class="page-body">
+
+    <nav class="sidebar-nav" id="sidebar-nav">
+      <div class="sidenav-label">Contents</div>
+      <a class="sidenav-item" href="#context">01 — Context &amp; Problem</a>
+      <a class="sidenav-item" href="#landscape">02 — Cloud Landscape</a>
+      <a class="sidenav-item" href="#research">03 — Research Phase</a>
+      <a class="sidenav-item" href="#strategy">04 — Strategic Thinking</a>
+      <a class="sidenav-item" href="#challenges">05 — Challenges &amp; Solutions</a>
+      <a class="sidenav-item" href="#execution">06 — Execution</a>
+      <a class="sidenav-item" href="#impact">07 — Measurable Impact</a>
+      <a class="sidenav-item" href="#frameworks">08 — Frameworks &amp; Tools</a>
+      <a class="sidenav-item" href="#reflection">09 — Reflection</a>
+    </nav>
+
+    <main class="content-col">
+
+      <!-- 01 CONTEXT -->
+      <section class="chapter" id="context">
+        <div class="chapter-num reveal">01</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">THE PROBLEM<br><em>The multi-cloud governance gap</em></h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>Evernorth operates at the intersection of healthcare services, pharmacy benefits, and enterprise workforce management — a regulated environment where cloud adoption has accelerated faster than the governance structures designed to manage it safely. By the time I stepped into the BISO role, the organisation's cloud footprint had grown into a heterogeneous multi-cloud estate spanning <strong>AWS as the primary public cloud platform, Microsoft Azure for M365 and enterprise integrations, Oracle OCI for specialised workloads and legacy platform modernisation</strong>, and a sprawling catalogue of SaaS and PaaS vendors with varying levels of security assurance.</p>
+          <p>The fundamental governance problem was not that cloud was insecure by design — it was that <strong>no single, unified security framework governed how all three CSPs, plus the SaaS/PaaS layer, were assessed, configured, monitored, and remediated</strong>. Each platform had been adopted with its own security controls, its own configuration baselines, and its own monitoring approach. Gaps lived in the white space between them.</p>
+          <p>For a healthcare organisation subject to HIPAA, PCI-DSS, and Cigna's own rigorous internal security standards, that fragmentation represented material risk — not theoretical risk. The question was not whether there were misconfigurations across this estate. The question was <strong>how many, where, and which ones could cause a breach or compliance failure before they were found and fixed.</strong></p>
+        </div>
+
+        <div class="pullquote reveal">
+          <p>Multi-cloud is not a technology strategy. It is a risk distribution problem — and without unified governance, every cloud platform you add multiplies the surface area your adversaries can probe while your teams are looking elsewhere.</p>
+          <cite>Framing principle — cloud security governance programme</cite>
+        </div>
+
+        <div class="two-col reveal">
+          <div class="callout" data-label="The Scale Problem">
+            <div class="callout-title">Cloud Footprint Complexity</div>
+            <p>AWS, Azure, and OCI each present distinct IAM models, networking constructs, logging frameworks, and service catalogues. Governing them under a single coherent security standard requires abstraction — translating platform-specific controls into unified policy language that applies consistently across all three.</p>
+          </div>
+          <div class="callout" data-label="The Velocity Problem">
+            <div class="callout-title">Cloud Deployed Faster Than Governance</div>
+            <p>Development teams were provisioning cloud resources through Infrastructure as Code at a pace that manual security review could not match. New S3 buckets, Azure storage accounts, OCI compute instances, and third-party SaaS integrations were appearing in the estate faster than they could be assessed against security baselines.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 LANDSCAPE -->
+      <section class="chapter" id="landscape">
+        <div class="chapter-num reveal">02</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">CLOUD LANDSCAPE<br><em>What was in scope</em></h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>Before any governance programme can be designed, the terrain must be mapped precisely. The multi-cloud estate at Evernorth's HR and Legal IT business units covered four distinct cloud tiers, each with its own risk profile, security tooling maturity, and compliance obligations.</p>
+        </div>
+
+        <div class="arch-diagram reveal">
+          <div class="arch-title">Multi-Cloud Security Governance Scope</div>
+          <div class="arch-layers">
+            <div class="arch-layer">
+              <div class="arch-layer-label">Public Cloud IaaS</div>
+              <div class="arch-layer-boxes">
+                <span class="arch-box aws">AWS EC2 / S3 / RDS</span>
+                <span class="arch-box aws">AWS Lambda / EKS</span>
+                <span class="arch-box azure">Azure VMs / Blob</span>
+                <span class="arch-box azure">Azure AKS / AD</span>
+              </div>
+            </div>
+            <div class="arch-layer">
+              <div class="arch-layer-label">PaaS / Managed</div>
+              <div class="arch-layer-boxes">
+                <span class="arch-box aws">AWS RDS / SQS / SNS</span>
+                <span class="arch-box azure">Azure SQL / Service Bus</span>
+                <span class="arch-box oci">OCI Autonomous DB</span>
+                <span class="arch-box oci">OCI Functions / OKE</span>
+              </div>
+            </div>
+            <div class="arch-layer">
+              <div class="arch-layer-label">SaaS / Vendor</div>
+              <div class="arch-layer-boxes">
+                <span class="arch-box saas">M365 / SharePoint</span>
+                <span class="arch-box saas">Workday HR</span>
+                <span class="arch-box saas">ServiceNow</span>
+                <span class="arch-box saas">Vendor APIs</span>
+              </div>
+            </div>
+            <div class="arch-layer">
+              <div class="arch-layer-label">Security Controls</div>
+              <div class="arch-layer-boxes">
+                <span class="arch-box ctrl">CSPM / CWPP</span>
+                <span class="arch-box ctrl">SIEM / SOAR</span>
+                <span class="arch-box ctrl">IaC Scanning</span>
+                <span class="arch-box ctrl">IAM Governance</span>
+                <span class="arch-box ctrl">Runtime Monitoring</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prose reveal">
+          <p>Each layer presented distinct security challenges. IaaS workloads on AWS and Azure were the highest-volume and highest-velocity environments — provisioned through Terraform and CloudFormation, they required automated security guardrails at the IaC layer before resources were ever deployed. OCI workloads, while fewer in number, carried legacy data processing responsibilities where misconfigurations had the highest potential impact. The SaaS layer presented a different problem entirely: vendor-managed infrastructure where Evernorth's control was limited to configuration of the application layer and access management — not the underlying platform.</p>
+        </div>
+      </section>
+
+      <!-- 03 RESEARCH -->
+      <section class="chapter" id="research">
+        <div class="chapter-num reveal">03</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">RESEARCH PHASE<br><em>Mapping the real posture</em></h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>The research phase for cloud security governance is a structured interrogation of the estate — not a checklist exercise. The goal was to understand not just what misconfigurations existed, but <strong>why they existed</strong>: what process gaps, tooling limitations, or governance absences allowed them to persist. Fixing symptoms without understanding causes produces a hamster wheel of remediation rather than durable security improvement.</p>
+        </div>
+
+        <div class="labeled-rule reveal"><span class="lr-text">Research Workstreams</span></div>
+
+        <div class="timeline reveal">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">STREAM A</div>
+            <div class="tl-content">
+              <div class="tl-title">Cloud Asset Inventory &amp; Classification</div>
+              <p class="tl-desc">Conducted a full inventory of cloud resources across AWS, Azure, and OCI — using CSPM tooling to enumerate accounts, subscriptions, and tenancies. Each resource was classified by data sensitivity (PHI-adjacent, PII, legal-privileged, or general) to establish a risk-weighted remediation priority model. Shadow cloud accounts — provisioned outside IT governance — were surfaced and brought into scope.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">STREAM B</div>
+            <div class="tl-content">
+              <div class="tl-title">Configuration Baseline Benchmarking</div>
+              <p class="tl-desc">Assessed current cloud configurations against CIS Benchmarks for AWS, Azure, and OCI — the industry-standard configuration baseline for each platform. Findings were triaged by severity and mapped to their regulatory consequence: HIPAA §164.312 technical safeguards, PCI-DSS v4.0 requirements 1 through 12, and Cigna's internal cloud security standards. This produced a remediation backlog with regulatory weight attached to each finding.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">STREAM C</div>
+            <div class="tl-content">
+              <div class="tl-title">IAM Architecture Review</div>
+              <p class="tl-desc">Reviewed identity and access management across all three CSPs — evaluating privilege levels, cross-account trust relationships, service account permissions, federation configurations, and MFA enforcement coverage. Particular attention was paid to over-privileged IAM roles in AWS and Azure AD conditional access policy gaps — two of the most commonly exploited misconfigurations in enterprise cloud environments.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">STREAM D</div>
+            <div class="tl-content">
+              <div class="tl-title">DevSecOps Pipeline Maturity Assessment</div>
+              <p class="tl-desc">Evaluated the security integration maturity of existing CI/CD pipelines — assessing whether IaC was being scanned for misconfigurations before deployment (shift-left), whether container images were scanned for vulnerabilities, whether secrets were managed through vault services rather than hardcoded, and whether security gates existed at the pipeline level to block high-risk deployments automatically.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">STREAM E</div>
+            <div class="tl-content">
+              <div class="tl-title">SaaS &amp; Vendor Security Assessment</div>
+              <p class="tl-desc">Reviewed third-party SaaS vendors against a vendor security assessment framework — evaluating SOC 2 Type II reports, data processing agreements, HIPAA Business Associate Agreements (BAAs), encryption standards, incident notification SLAs, and data residency commitments. Identified vendors lacking adequate contractual security obligations for the sensitivity of data they processed.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-block reveal">
+          <p>The research confirmed the hypothesis: the most critical cloud risks were not exotic — they were classic misconfigurations that had accumulated over time because no automated, continuous detection mechanism existed to catch them before they became persistent findings.</p>
+          <div class="attr">Research phase conclusion</div>
+        </div>
+      </section>
+
+      <!-- 04 STRATEGY -->
+      <section class="chapter" id="strategy">
+        <div class="chapter-num reveal">04</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">STRATEGIC THINKING<br><em>The governance architecture</em></h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>The strategic challenge in multi-cloud governance is building a programme that is <strong>platform-agnostic at the policy layer but platform-native at the control layer</strong>. A single security policy — "all storage containing PHI must be encrypted at rest with customer-managed keys" — must translate into three different technical implementations: AWS KMS on S3, Azure Key Vault on Blob Storage, and OCI Vault on Object Storage. The policy is universal; the control is specific.</p>
+          <p>My governance architecture was designed around five pillars, each addressing a distinct dimension of the multi-cloud risk problem.</p>
+        </div>
+
+        <div class="metrics-grid reveal">
+          <div class="metric-card">
+            <div class="metric-num">01</div>
+            <div class="metric-label">Unified Policy Layer</div>
+            <p class="metric-desc">A single cloud security policy framework — mapped to CIS, NIST CSF 2.0, and CSA CCM — that governs all CSPs, SaaS, and PaaS environments through translated platform-native controls.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">02</div>
+            <div class="metric-label">Shift-Left IaC Security</div>
+            <p class="metric-desc">Security guardrails embedded at the Infrastructure as Code layer — catching misconfigurations in Terraform and CloudFormation templates before any resource is ever provisioned to the cloud.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">03</div>
+            <div class="metric-label">Continuous Cloud Posture</div>
+            <p class="metric-desc">CSPM tooling providing continuous, automated detection of configuration drift across all cloud accounts — replacing point-in-time audit exercises with always-on monitoring.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">04</div>
+            <div class="metric-label">Zero Trust IAM</div>
+            <p class="metric-desc">Least-privilege IAM across all platforms — eliminating standing privileges, enforcing MFA, managing cross-account access through role assumption rather than long-lived credentials.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">05</div>
+            <div class="metric-label">Vendor Risk Governance</div>
+            <p class="metric-desc">Structured SaaS/PaaS vendor assessment framework — ensuring third-party cloud services meet security and compliance requirements before data is entrusted to them.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">06</div>
+            <div class="metric-label">Risk-Linked Reporting</div>
+            <p class="metric-desc">Cloud posture KRIs linked directly to regulatory consequence — giving business leaders a risk-weighted view of cloud security posture, not just a list of technical findings.</p>
+          </div>
+        </div>
+
+        <div class="prose reveal">
+          <p>The Zero Trust principle was especially important in the multi-cloud context. Traditional perimeter-based security assumed that resources inside the corporate network were inherently trusted. In a multi-cloud environment with SaaS integrations, remote workforce access, and API-based service-to-service communication spanning three CSPs, <strong>there is no perimeter to defend</strong>. Zero Trust — verify explicitly, use least privilege, assume breach — provided the architectural philosophy that governed IAM design decisions across all platforms.</p>
+        </div>
+
+        <div class="badge-row reveal">
+          <span class="badge">CIS AWS Foundations Benchmark</span>
+          <span class="badge">CIS Azure Benchmark</span>
+          <span class="badge">CIS OCI Benchmark</span>
+          <span class="badge">NIST CSF 2.0</span>
+          <span class="badge">CSA Cloud Controls Matrix</span>
+          <span class="badge">HIPAA §164.312</span>
+          <span class="badge">PCI-DSS v4.0</span>
+          <span class="badge">Zero Trust Architecture</span>
+          <span class="badge">Shared Responsibility Model</span>
+        </div>
+      </section>
+
+      <!-- 05 CHALLENGES -->
+      <section class="chapter" id="challenges">
+        <div class="chapter-num reveal">05</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">CHALLENGES &amp;<br><em>Solutions paired</em></h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>Multi-cloud governance at enterprise scale is where well-designed strategies encounter organisational, technical, and operational friction. Each challenge below represented a real impediment to the programme — and each required a solution tailored to the specific constraints of the Cigna environment.</p>
+        </div>
+
+        <!-- C/S 1 -->
+        <div class="cs-grid reveal">
+          <div class="cs-cell">
+            <div class="cs-cell-label"><span class="icon">⚡</span> Challenge 01</div>
+            <div class="cs-cell-title">No Unified Visibility Across CSPs</div>
+            <p>AWS, Azure, and OCI each had siloed security tooling — AWS Security Hub, Microsoft Defender for Cloud, and OCI Security Zones operated independently with no consolidated view. Security teams could not answer "what is our overall cloud posture?" without pulling three separate reports and manually correlating findings across platforms and accounts.</p>
+          </div>
+          <div class="cs-cell solution">
+            <div class="cs-cell-label"><span class="icon">✓</span> Solution Applied</div>
+            <div class="cs-cell-title">CSPM-Driven Unified Posture Dashboard</div>
+            <p>Implemented a Cloud Security Posture Management (CSPM) layer providing a normalised, cross-platform view of misconfigurations, policy violations, and compliance posture across all three CSPs. Findings were deduplicated, severity-normalised, and mapped to regulatory controls — producing a single source of truth for cloud security posture that both security teams and business leadership could consume.</p>
+          </div>
+        </div>
+
+        <!-- C/S 2 -->
+        <div class="cs-grid reveal">
+          <div class="cs-cell">
+            <div class="cs-cell-label"><span class="icon">⚡</span> Challenge 02</div>
+            <div class="cs-cell-title">IaC Deployed Without Security Review</div>
+            <p>Development teams were deploying Terraform modules and CloudFormation stacks at high velocity. Security review was a manual, post-deployment activity — meaning misconfigured resources were often already running in production before any security assessment occurred. Some misconfigurations had existed undetected for months.</p>
+          </div>
+          <div class="cs-cell solution">
+            <div class="cs-cell-label"><span class="icon">✓</span> Solution Applied</div>
+            <div class="cs-cell-title">Shift-Left IaC Security Gates</div>
+            <p>Integrated IaC security scanning (Checkov / Terraform Sentinel policies) directly into CI/CD pipelines — scanning every Terraform and CloudFormation change at the pull request stage before any deployment was approved. High-severity findings (open storage buckets, unrestricted security groups, disabled encryption) automatically blocked the pipeline. Medium findings generated advisory alerts without blocking. This moved security review from post-deployment remediation to pre-deployment prevention.</p>
+          </div>
+        </div>
+
+        <!-- C/S 3 -->
+        <div class="cs-grid reveal">
+          <div class="cs-cell">
+            <div class="cs-cell-label"><span class="icon">⚡</span> Challenge 03</div>
+            <div class="cs-cell-title">Over-Privileged IAM Across All Platforms</div>
+            <p>IAM privilege creep is endemic in enterprise cloud environments that have grown organically over time. Across AWS, Azure AD, and OCI IAM, audit findings revealed service accounts with Administrator-equivalent permissions being used for routine automation tasks, human accounts with standing access to sensitive data stores, and cross-account trust relationships that were broader than the specific integrations they were established to support.</p>
+          </div>
+          <div class="cs-cell solution">
+            <div class="cs-cell-label"><span class="icon">✓</span> Solution Applied</div>
+            <div class="cs-cell-title">Least-Privilege IAM Remediation Programme</div>
+            <p>Led a structured IAM remediation programme across all three platforms — using AWS IAM Access Analyzer, Azure AD Access Reviews, and OCI IAM analysis to identify over-privileged principals. Implemented a just-in-time (JIT) access model for privileged operations, replacing standing admin access with time-bounded role assumption. Service accounts were scoped to the minimum permissions required for their specific function. MFA enforcement was extended to cover all human identities accessing cloud consoles and sensitive APIs.</p>
+          </div>
+        </div>
+
+        <!-- C/S 4 -->
+        <div class="cs-grid reveal">
+          <div class="cs-cell">
+            <div class="cs-cell-label"><span class="icon">⚡</span> Challenge 04</div>
+            <div class="cs-cell-title">SaaS Vendor Blind Spots</div>
+            <p>A significant portion of HR and Legal IT's operational data — employee records, legal correspondence, benefits data — was processed through SaaS platforms with varying security maturity. Some vendors lacked current SOC 2 Type II reports. Several did not have signed HIPAA BAAs despite processing health-adjacent employee data. Data residency commitments were absent or ambiguous in legacy contracts.</p>
+          </div>
+          <div class="cs-cell solution">
+            <div class="cs-cell-label"><span class="icon">✓</span> Solution Applied</div>
+            <div class="cs-cell-title">SaaS Vendor Security Assessment Framework</div>
+            <p>Designed and implemented a tiered SaaS vendor security assessment process — categorising vendors by the sensitivity of data they processed and applying corresponding assessment rigour. Tier 1 vendors (processing PHI-adjacent or legally-privileged data) required current SOC 2 Type II, signed BAA, documented incident notification within 72 hours, and data residency confirmation. Vendors failing Tier 1 requirements were flagged for contract renegotiation or service migration. A vendor security register was established to track assessment status and renewal dates continuously.</p>
+          </div>
+        </div>
+
+        <!-- C/S 5 -->
+        <div class="cs-grid reveal">
+          <div class="cs-cell">
+            <div class="cs-cell-label"><span class="icon">⚡</span> Challenge 05</div>
+            <div class="cs-cell-title">Container &amp; Kubernetes Security Gaps</div>
+            <p>Containerised workloads running on AWS EKS and Azure AKS were deployed with base images that had not been scanned for known vulnerabilities, Kubernetes RBAC configurations that were broader than necessary, and network policies absent — meaning pods could communicate laterally within the cluster without restriction.</p>
+          </div>
+          <div class="cs-cell solution">
+            <div class="cs-cell-label"><span class="icon">✓</span> Solution Applied</div>
+            <div class="cs-cell-title">Container Security Programme</div>
+            <p>Implemented a container security programme spanning the full image lifecycle: base image scanning in the CI/CD pipeline (blocking deployment of images with critical CVEs), a curated approved base image registry, Kubernetes RBAC hardening aligned to least-privilege principles, network policy implementation to enforce pod-to-pod communication restrictions, and runtime security monitoring for anomalous container behaviour. OCI Kubernetes Engine (OKE) workloads received equivalent controls adapted to OCI's native security tooling.</p>
+          </div>
+        </div>
+
+        <!-- C/S 6 -->
+        <div class="cs-grid reveal">
+          <div class="cs-cell">
+            <div class="cs-cell-label"><span class="icon">⚡</span> Challenge 06</div>
+            <div class="cs-cell-title">Secrets Sprawl Across Cloud Environments</div>
+            <p>Developer convenience and historical practice had resulted in secrets — API keys, database credentials, cloud service account keys — appearing in code repositories, CI/CD pipeline environment variables, and application configuration files stored in cloud object storage. Secret scanning had not been consistently enforced across all repositories and pipelines.</p>
+          </div>
+          <div class="cs-cell solution">
+            <div class="cs-cell-label"><span class="icon">✓</span> Solution Applied</div>
+            <div class="cs-cell-title">Secrets Management Centralisation</div>
+            <p>Mandated migration of all cloud service secrets to platform-native vault services — AWS Secrets Manager, Azure Key Vault, and OCI Vault — with rotation policies enforced programmatically. Integrated secret scanning into CI/CD pipelines to detect and block any commit containing credentials, API keys, or private certificates. A remediation sprint addressed the existing secrets backlog across repositories, with compromised credentials rotated as the highest priority. Developer guidance and training on secrets management best practices was embedded into the DevSecOps onboarding programme.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 EXECUTION -->
+      <section class="chapter" id="execution">
+        <div class="chapter-num reveal">06</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">EXECUTION<br><em>How the programme was built</em></h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>Execution of a multi-cloud governance programme at enterprise scale requires a phased approach — attempting to address every platform, every control domain, and every finding simultaneously is a path to programme paralysis. The programme was structured in three phases, each building on the foundations established in the previous phase.</p>
+        </div>
+
+        <div class="labeled-rule reveal"><span class="lr-text">Execution Phases</span></div>
+
+        <div class="timeline reveal">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">PHASE 1</div>
+            <div class="tl-content">
+              <div class="tl-title">Foundation — Visibility &amp; Critical Remediation</div>
+              <p class="tl-desc">Deployed CSPM tooling across all cloud accounts to establish unified posture visibility. Prioritised and remediated critical misconfigurations with direct regulatory exposure — open storage buckets, publicly accessible databases, disabled CloudTrail logging, MFA gaps on privileged accounts. Established the cloud security KRI dashboard providing real-time posture metrics to both security and business leadership. Duration: first 60 days.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">PHASE 2</div>
+            <div class="tl-content">
+              <div class="tl-title">Prevention — Shift-Left DevSecOps Integration</div>
+              <p class="tl-desc">Integrated IaC security scanning and container image scanning into CI/CD pipelines across HR IT and Legal IT development teams. Implemented secrets management centralisation and secret scanning enforcement. Deployed Kubernetes RBAC hardening and network policy controls across EKS and AKS clusters. Launched IAM least-privilege remediation programme across all three CSPs. Duration: days 60–120.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-time">PHASE 3</div>
+            <div class="tl-content">
+              <div class="tl-title">Maturation — Governance, Vendor Risk &amp; Continuous Improvement</div>
+              <p class="tl-desc">Completed SaaS vendor assessment programme, negotiating contract updates for Tier 1 vendors lacking required security commitments. Established cloud security governance cadence — monthly posture reviews, quarterly cloud risk assessments, and architecture review gates for new cloud service adoptions. Developed cloud security champion capability within development teams. Duration: days 120+ (ongoing).</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout" data-label="DevSecOps Integration Detail" style="margin-top:2rem;">
+          <div class="callout-title">Pipeline Security Controls — What Was Built</div>
+          <p>The CI/CD security integration covered four enforcement layers: (1) IaC static analysis blocking high-severity misconfigurations before provisioning, (2) container image scanning blocking images with critical CVEs from promotion to production, (3) secret scanning preventing credential commits from merging into the main branch, and (4) dependency scanning alerting on open-source components with known exploitable vulnerabilities. Each control was tuned to minimise false positives that would erode developer trust in the programme.</p>
+        </div>
+
+        <div class="prose reveal">
+          <p>A critical design decision was building security controls that developers <strong>experienced as helpful, not obstructive</strong>. Every automated pipeline gate included actionable remediation guidance — not just a failure notification, but a description of the specific misconfiguration, its risk rationale, and the exact change required to resolve it. This design reduced the friction of security enforcement and prevented the "just bypass the gate" culture that emerges when developers feel security controls are arbitrary.</p>
+        </div>
+      </section>
+
+      <!-- 07 IMPACT -->
+      <section class="chapter" id="impact">
+        <div class="chapter-num reveal">07</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">MEASURABLE<br><em>Impact delivered</em></h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>Cloud security governance programmes produce two categories of outcome: the risks prevented before they materialise (which are inherently harder to measure but represent the programme's core value) and the measurable improvements in posture, velocity, and compliance coverage that demonstrate the programme is working. Both categories are represented below.</p>
+        </div>
+
+        <div class="metrics-grid reveal">
+          <div class="metric-card">
+            <div class="metric-num">Unified</div>
+            <div class="metric-label">Multi-Cloud Posture View</div>
+            <p class="metric-desc">AWS, Azure, and OCI security posture consolidated into a single CSPM-driven dashboard — replacing three separate, manually correlated audit exercises with continuous, automated visibility.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">Shift-Left</div>
+            <div class="metric-label">IaC Security Enforcement</div>
+            <p class="metric-desc">IaC misconfigurations now caught at the pull request stage — before any cloud resource is provisioned — rather than discovered post-deployment through reactive scanning or incident response.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">Zero</div>
+            <div class="metric-label">Standing Privileged Access</div>
+            <p class="metric-desc">Just-in-time access model established for privileged cloud operations across all three CSPs — eliminating standing admin accounts and reducing the blast radius of any compromised identity.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">100%</div>
+            <div class="metric-label">Secrets in Vault Services</div>
+            <p class="metric-desc">All cloud service credentials migrated to AWS Secrets Manager, Azure Key Vault, or OCI Vault — eliminating hardcoded secrets in code repositories, pipeline variables, and configuration files.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">Tier 1</div>
+            <div class="metric-label">SaaS Vendors Assessed</div>
+            <p class="metric-desc">All SaaS vendors processing PHI-adjacent or legally-privileged data formally assessed against security requirements — BAAs in place, SOC 2 reports current, data residency documented.</p>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">↓ MTTR</div>
+            <div class="metric-label">Cloud Finding Remediation</div>
+            <p class="metric-desc">Reduction in mean time to remediate cloud security findings — driven by automated detection, business-weighted prioritisation, and developer-friendly remediation guidance embedded in pipeline alerts.</p>
+          </div>
+        </div>
+
+        <div class="pullquote reveal">
+          <p>The measure of a cloud security programme is not the number of findings it surfaces — any scanner can produce a finding list. The measure is how quickly the organisation moves from finding to fixed, and whether the same misconfiguration category stops appearing over time. That requires cultural change as much as technical control.</p>
+          <cite>Raja Kumar Sharma — on cloud security programme outcomes</cite>
+        </div>
+
+        <div class="prose reveal">
+          <p>The DevSecOps integration delivered an impact that compound over time: by catching misconfigurations at the IaC layer, the programme prevented a class of cloud security findings from ever reaching the production environment. The posture improvement is not visible in a "findings resolved" count — it is visible in the findings that <strong>no longer appear in production scans</strong> because they were blocked at the source. This prevention-oriented metric is the most meaningful indicator of a mature DevSecOps programme.</p>
+        </div>
+      </section>
+
+      <!-- 08 FRAMEWORKS -->
+      <section class="chapter" id="frameworks">
+        <div class="chapter-num reveal">08</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">FRAMEWORKS<br><em>&amp; Technical tooling</em></h2>
+        <div class="chapter-rule"></div>
+
+        <div class="two-col reveal">
+          <div>
+            <div class="section-label">Governance Frameworks</div>
+            <ul class="styled-list">
+              <li><strong>NIST CSF 2.0</strong> — Identify, Protect, Detect, Respond, Recover functions applied to cloud security programme structure</li>
+              <li><strong>CSA Cloud Controls Matrix (CCM)</strong> — Cross-platform cloud control framework providing CSP-agnostic security requirements</li>
+              <li><strong>CIS Benchmarks</strong> — AWS, Azure, and OCI platform-specific configuration baselines</li>
+              <li><strong>Zero Trust Architecture (NIST SP 800-207)</strong> — Identity-centric security model governing IAM design across all CSPs</li>
+              <li><strong>Shared Responsibility Model</strong> — Formal delineation of CSP vs. customer security obligations for each platform tier</li>
+            </ul>
+          </div>
+          <div>
+            <div class="section-label">Compliance Alignment</div>
+            <ul class="styled-list">
+              <li><strong>HIPAA §164.312</strong> — Technical safeguard requirements mapped to cloud encryption, access control, and audit logging controls</li>
+              <li><strong>PCI-DSS v4.0</strong> — Requirements 1–12 mapped to cloud network segmentation, access control, and monitoring controls</li>
+              <li><strong>Cigna Cloud Security Standards</strong> — Internal policy requirements governing all cloud service adoption and configuration</li>
+              <li><strong>State Privacy Laws</strong> — CCPA and applicable state-level data residency and processing requirements for SaaS vendors</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="labeled-rule reveal"><span class="lr-text">Technical Controls &amp; Tooling</span></div>
+
+        <div class="two-col reveal">
+          <div>
+            <div class="section-label">AWS Security Stack</div>
+            <ul class="styled-list">
+              <li>AWS Security Hub — centralised findings aggregation and compliance scoring</li>
+              <li>AWS Config — continuous configuration compliance monitoring and remediation</li>
+              <li>AWS IAM Access Analyzer — over-privileged role detection and policy validation</li>
+              <li>AWS Secrets Manager — secrets lifecycle management with automatic rotation</li>
+              <li>AWS CloudTrail + GuardDuty — API audit logging and threat detection</li>
+              <li>AWS Macie — PHI/PII discovery in S3 buckets</li>
+            </ul>
+          </div>
+          <div>
+            <div class="section-label">Azure &amp; OCI Stack</div>
+            <ul class="styled-list">
+              <li>Microsoft Defender for Cloud — CSPM and workload protection across Azure</li>
+              <li>Azure AD Conditional Access — identity-based access control with MFA enforcement</li>
+              <li>Azure Key Vault — secrets, keys, and certificate management</li>
+              <li>OCI Security Zones — preventive guardrails blocking insecure OCI configurations</li>
+              <li>OCI Vault — secrets management for OCI workloads</li>
+              <li>OCI Cloud Guard — threat detection and automated response</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="labeled-rule reveal"><span class="lr-text">DevSecOps Tooling</span></div>
+
+        <div class="badge-row reveal">
+          <span class="badge">Checkov (IaC scanning)</span>
+          <span class="badge">Terraform Sentinel</span>
+          <span class="badge">Trivy (Container scanning)</span>
+          <span class="badge">GitLeaks (Secret scanning)</span>
+          <span class="badge">OWASP Dependency Check</span>
+          <span class="badge">Snyk (SCA)</span>
+          <span class="badge">kube-bench (K8s CIS)</span>
+          <span class="badge">Falco (Runtime security)</span>
+          <span class="badge">AWS EKS Security Groups</span>
+          <span class="badge">Azure Policy (OPA)</span>
+        </div>
+      </section>
+
+      <!-- 09 REFLECTION -->
+      <section class="chapter" id="reflection">
+        <div class="chapter-num reveal">09</div>
+        <h2 class="chapter-title reveal" style="transition-delay:.06s">REFLECTION<br><em>What multi-cloud governance teaches</em></h2>
+        <div class="chapter-rule"></div>
+
+        <div class="prose reveal" style="transition-delay:.1s">
+          <p>Multi-cloud security governance in a regulated healthcare enterprise is one of the most technically and organisationally complex security challenges in the industry today. It sits at the intersection of cloud architecture, identity engineering, developer tooling, regulatory compliance, and stakeholder communication — and it demands competence across all of these simultaneously.</p>
+          <p>Four reflections stand out from this programme that carry broader lessons for cloud security leadership.</p>
+        </div>
+
+        <div class="cs-grid reveal" style="grid-template-columns:1fr; gap:1px;">
+          <div class="cs-cell" style="border-bottom:1px solid var(--rule);">
+            <div class="cs-cell-label">Reflection 01</div>
+            <div class="cs-cell-title">Governance Without Visibility Is Just Policy</div>
+            <p>A cloud security policy that cannot be verified continuously is not a security control — it is a document. The foundational investment of the programme was establishing automated, continuous posture monitoring across all three CSPs before attempting any other governance activity. Without that visibility, every subsequent discussion about cloud security risk was speculative. With it, discussions became evidence-based and actionable.</p>
+          </div>
+          <div class="cs-cell solution" style="border-bottom:1px solid var(--rule);">
+            <div class="cs-cell-label">Reflection 02</div>
+            <div class="cs-cell-title">Developer Trust is a Security Asset — Protect It</div>
+            <p>Every security gate added to a CI/CD pipeline is a potential point of friction that can erode developer goodwill toward the security programme. The design principle of providing actionable, specific remediation guidance with every pipeline failure — rather than a generic "security check failed" error — was not a courtesy. It was a strategic investment in the developer relationship that makes the entire DevSecOps programme sustainable over time.</p>
+          </div>
+          <div class="cs-cell" style="border-bottom:1px solid var(--rule);">
+            <div class="cs-cell-label">Reflection 03</div>
+            <div class="cs-cell-title">IAM is the Most Important Control in Cloud Security</div>
+            <p>Across all three CSPs, the highest-risk findings consistently traced back to identity and access management: over-privileged roles, missing MFA, broad trust relationships, long-lived credentials. Cloud infrastructure misconfigurations can expose data — but a compromised privileged identity can exfiltrate it, modify it, and cover its tracks. IAM hardening consistently produces the highest security return on investment of any cloud control domain.</p>
+          </div>
+          <div class="cs-cell solution">
+            <div class="cs-cell-label">Reflection 04</div>
+            <div class="cs-cell-title">Shared Responsibility Requires Active Management</div>
+            <p>The shared responsibility model — CSPs secure the cloud infrastructure; customers secure what runs on it — is well understood in theory and routinely misapplied in practice. Healthcare organisations sometimes assume that choosing a HIPAA-eligible CSP service transfers security responsibility. It does not. Actively managing the customer's side of the shared responsibility boundary, across every service and every CSP, is the unglamorous operational core of enterprise cloud security governance.</p>
+          </div>
+        </div>
+
+        <div class="highlight-block reveal">
+          <p>The multi-cloud estate is not a technical problem to be solved once. It is a living system that grows, changes, and accumulates risk continuously. The security programme that governs it must be equally dynamic — continuously monitoring, continuously adapting, and continuously educating the engineering culture that shapes the estate every day.</p>
+          <div class="attr">Raja Kumar Sharma — on sustaining cloud security governance at enterprise scale</div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="case-footer">
+    <div>
+      <div class="cf-headline">
+        VIEW MORE WORK
+        <span>Explore the full portfolio and case studies</span>
+      </div>
+      <div class="cf-links">
+        <a href="index.html" class="cf-btn cf-btn-light">← Portfolio</a>
+        <a href="cigna-case-study.html" class="cf-btn cf-btn-light">← BISO Strategy Case Study</a>
+        <a href="mailto:sharma06raja@gmail.com" class="cf-btn cf-btn-teal">Get in Touch</a>
+      </div>
+    </div>
+    <div class="cf-right">
+      <div class="cf-contact-row">
+        <span class="cf-contact-label">Email</span>
+        <a href="mailto:sharma06raja@gmail.com" class="cf-contact-val">sharma06raja@gmail.com</a>
+      </div>
+      <div class="cf-contact-row">
+        <span class="cf-contact-label">Phone</span>
+        <a href="tel:+917093902855" class="cf-contact-val">+91 70939 02855</a>
+      </div>
+      <div class="cf-contact-row">
+        <span class="cf-contact-label">LinkedIn</span>
+        <a href="https://linkedin.com/in/rrkshar13" target="_blank" rel="noopener" class="cf-contact-val">linkedin.com/in/rrkshar13</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Progress bar
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const pct = Math.min((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100, 100);
+    bar.style.width = pct + '%';
+  }, { passive: true });
+
+  // Topbar shadow
+  const topbar = document.getElementById('topbar');
+  window.addEventListener('scroll', () => {
+    topbar.style.boxShadow = window.scrollY > 40 ? '0 2px 20px rgba(17,17,24,.09)' : 'none';
+  }, { passive: true });
+
+  // Sidebar active state
+  const chapters = document.querySelectorAll('.chapter');
+  const navItems = document.querySelectorAll('.sidenav-item');
+  const sObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const active = document.querySelector(`.sidenav-item[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.35 });
+  chapters.forEach(c => sObs.observe(c));
+</script>
+</body>
+</html>
